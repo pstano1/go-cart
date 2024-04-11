@@ -1,0 +1,34 @@
+{
+  "name": "go-cart-admin",
+  "version": "1.0.0",
+  "main": "app.ts",
+  "scripts": {
+    "dev": "concurrently \"npm:dev:webpack\" \"npm:dev:tailwind\"",
+    "dev:webpack": "webpack --mode development --watch",
+    "dev:tailwind": "npx tailwindcss -i ./src/app.css -o ./bin/output.css --watch",
+    "build": "npm run build:webpack && npm run build:tailwind",
+    "build:webpack": "webpack --mode production",
+    "build:tailwind": "npx tailwindcss -i ./src/app.css -o ./bin/output.css"
+  },
+  "keywords": [],
+  "author": "Paweł Stano",
+  "dependencies": {
+    "autoprefixer": "^10.4.19",
+    "mithril": "^2.2.2",
+    "tailwindcss": "^3.4.3",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/mithril": "^2.2.6",
+    "@types/node": "^20.12.7",
+    "concurrently": "^8.2.2",
+    "css-loader": "^7.1.1",
+    "file-loader": "^6.2.0",
+    "prettier": "3.2.5",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
+  }
+}

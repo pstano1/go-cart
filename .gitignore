@@ -1,0 +1,6 @@
+node_modules/
+.vscode/
+frontend/bin/main.js
+frontend/bin/output.css
+
+.DS_STORE
