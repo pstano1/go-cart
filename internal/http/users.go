@@ -99,7 +99,7 @@ func (i *HTTPInstanceAPI) signUserIn(ctx *fasthttp.RequestCtx) {
 	response, err := i.api.SignUserIn(request)
 	if err != nil {
 		ctx.SetBodyString(err.Error())
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		ctx.SetStatusCode(fasthttp.StatusUnauthorized)
 		return
 	}
 	body, err := json.Marshal(response)

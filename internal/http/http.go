@@ -16,7 +16,11 @@ import (
 )
 
 const (
-	bearerToken = "Bearer"
+	bearerToken          = "Bearer"
+	corsAllowHeaders     = "Content-Type,Authorization"
+	corsAllowMethods     = "HEAD,GET,POST,PUT,PATCH,DELETE,OPTIONS"
+	corsAllowOrigin      = "*"
+	corsAllowCredentials = "true"
 )
 
 type HTTPInstanceAPI struct {
@@ -60,14 +64,10 @@ func (i *HTTPInstanceAPI) Run() {
 	i.log.Info("Starting server at port",
 		zap.String("port", i.bind),
 	)
-	s := &fasthttp.Server{
-		Handler: r.Handler,
-		Name:    "Casker",
-	}
-	log.Fatal(s.ListenAndServe(i.bind))
+	log.Fatal(fasthttp.ListenAndServe(i.bind, i.corsMiddleware(r.Handler)))
 }
 
-func (i *HTTPInstanceAPI) authMiddleware(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
+func (i *HTTPInstanceAPI) authMiddleware(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		path := ctx.Path()
 		i.log.Debug("checking authentication for",
@@ -91,7 +91,23 @@ func (i *HTTPInstanceAPI) authMiddleware(handler fasthttp.RequestHandler) fastht
 			return
 		}
 
-		handler(ctx)
+		next(ctx)
+	}
+}
+
+func (i *HTTPInstanceAPI) corsMiddleware(next fasthttp.RequestHandler) fasthttp.RequestHandler {
+	return func(ctx *fasthttp.RequestCtx) {
+		ctx.Response.Header.Set("Access-Control-Allow-Origin", corsAllowOrigin)
+		ctx.Response.Header.Set("Access-Control-Allow-Methods", corsAllowMethods)
+		ctx.Response.Header.Set("Access-Control-Allow-Headers", corsAllowHeaders)
+		ctx.Response.Header.Set("Access-Control-Allow-Credentials", corsAllowCredentials)
+
+		if string(ctx.Method()) == "OPTIONS" {
+			ctx.SetStatusCode(fasthttp.StatusNoContent)
+			return
+		}
+
+		next(ctx)
 	}
 }
 

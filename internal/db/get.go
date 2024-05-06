@@ -9,6 +9,7 @@ func (d *DBController) GetUsers(filter *pkg.UserFilter) ([]pkg.User, error) {
 	users := make([]pkg.User, 0)
 	gormQuery := d.gormDB.Table("users").Select(`
 		users.id,
+		users.customer_id,
 		users.username,
 		users.password,
 		users.email,
@@ -29,6 +30,7 @@ func (d *DBController) GetUsers(filter *pkg.UserFilter) ([]pkg.User, error) {
 	for rows.Next() {
 		if err = rows.Scan(
 			&user.Id,
+			&user.CustomerId,
 			&user.Username,
 			&user.Password,
 			&user.Email,

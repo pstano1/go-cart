@@ -1,4 +1,6 @@
 import m from 'mithril'
+import axios, { AxiosResponse } from 'axios'
+import { ISignInResponse } from '../auth/models'
 
 interface ISignInView extends m.Component {
   isSent: boolean
@@ -6,17 +8,32 @@ interface ISignInView extends m.Component {
   handleSubmit: (event: Event) => void
 }
 
-let signIn: ISignInView = {
+const signIn: ISignInView = {
   handleSubmit: (event: Event): void => {
     event.preventDefault()
 
     const formData = new FormData(event.target as HTMLFormElement)
-    let jsonData: { [key: string]: string } = {}
+    let credentials: { [key: string]: string } = {}
 
     for (let [key, value] of formData.entries()) {
-      jsonData[key] = value as string
+      credentials[key] = value as string
     }
-    // send data
+
+    axios
+      .post('http://localhost:8000/api/user/signin', {
+        ...credentials,
+      })
+      .then((res: AxiosResponse<ISignInResponse>) => res.data)
+      .then((data: ISignInResponse) => {
+        localStorage.setItem('sessionToken', data.sessionToken)
+        // localStorage.setItem('permissons', data.permissions.join(','))
+      })
+      .then(() => {
+        m.route.set('/')
+      })
+      .catch((err: any) => {
+        // pass
+      })
   },
   view: () => {
     return m(
@@ -45,6 +62,7 @@ let signIn: ISignInView = {
         m(
           'button',
           {
+            type: 'submit',
             class: 'bg-midnightGreen text-antiflashWhite w-full rounded-lg p-2 mt-2 uppercase',
           },
           'sign in',

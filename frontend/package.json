@@ -14,6 +14,7 @@
   "author": "Paweł Stano",
   "dependencies": {
     "autoprefixer": "^10.4.19",
+    "axios": "^1.6.8",
     "mithril": "^2.2.2",
     "tailwindcss": "^3.4.3",
     "ts-loader": "^9.5.1",

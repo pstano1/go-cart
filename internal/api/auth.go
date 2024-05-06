@@ -76,8 +76,9 @@ func (a *InstanceAPI) SignUserIn(credentials *pkg.Credentials) (*pkg.SignInRespo
 		return nil, err
 	}
 	return &pkg.SignInResponse{
-		Username: credentials.Username,
-		Token:    JWT,
+		Username:    credentials.Username,
+		Permissions: user.Permissions,
+		Token:       JWT,
 	}, nil
 }
 
