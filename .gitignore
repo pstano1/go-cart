@@ -4,3 +4,5 @@ frontend/bin/main.js
 frontend/bin/output.css
 
 .DS_STORE
+
+app.env
