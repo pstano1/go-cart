@@ -4,23 +4,27 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/pstano1/customer-api/client"
 	"github.com/pstano1/go-cart/internal/api"
 	"github.com/pstano1/go-cart/internal/db"
 	"github.com/pstano1/go-cart/internal/http"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 const (
-	confOptBindPort         = "BIND_PORT"
-	confOptDatabaseHost     = "DATABASE_HOST"
-	confOptDatabaseName     = "DATABASE_NAME"
-	confOptDatabaseUsername = "DATABASE_USERNAME"
-	confOptDatabasePassword = "DATABASE_PASSWORD"
-	confOptDatabasePort     = "DATABASE_PORT"
-	confOptSecretKey        = "SECRET_KEY"
+	confOptBindPort               = "BIND_PORT"
+	confOptDatabaseHost           = "DATABASE_HOST"
+	confOptDatabaseName           = "DATABASE_NAME"
+	confOptDatabaseUsername       = "DATABASE_USERNAME"
+	confOptDatabasePassword       = "DATABASE_PASSWORD"
+	confOptDatabasePort           = "DATABASE_PORT"
+	confOptSecretKey              = "SECRET_KEY"
+	confOptCustomerServiceAddress = "CUSTOMER_SERVICE_ADDRESS"
 )
 
 func main() {
@@ -61,10 +65,19 @@ func createServerFromConfig(logger *zap.Logger) *http.HTTPInstanceAPI {
 		logger,
 	)
 
+	conn, err := grpc.Dial(viper.GetString(confOptCustomerServiceAddress), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		logger.Fatal("could not establish connection",
+			zap.Error(err),
+		)
+	}
+	customerClient := client.NewCustomerService(conn, logger)
+
 	instanceAPI := api.NewInstanceAPI(&api.APIConfig{
-		Logger:       logger,
-		DBCOntroller: dbController,
-		SecretKey:    viper.GetString(confOptSecretKey),
+		Logger:         logger,
+		DBController:   dbController,
+		CustomerClient: customerClient,
+		SecretKey:      viper.GetString(confOptSecretKey),
 	})
 
 	return http.NewHTTPInstanceAPI(&http.HTTPConfig{

@@ -56,6 +56,9 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	users.POST("/signin", i.signUserIn)
 	users.POST("/refresh", i.refreshToken)
 
+	customers := api.Group("/customer")
+	customers.GET("/id/{tag}", i.getCustomerId)
+
 	return r
 }
 
@@ -134,4 +137,28 @@ func validateFilter[T pkg.Filter](ctx *fasthttp.RequestCtx) (T, error) {
 		return filter, err
 	}
 	return filter, nil
+}
+
+func (i *HTTPInstanceAPI) getCustomerId(ctx *fasthttp.RequestCtx) {
+	i.log.Debug("got request for getting customer id")
+	tag := ctx.UserValue("tag").(string)
+	if tag == "" {
+		ctx.SetBodyString(pkg.ErrUnableToReadPayload.Error())
+		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		return
+	}
+	response, err := i.api.ExhchangeTagForId(tag)
+	if err != nil {
+		ctx.SetBodyString(err.Error())
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return
+	}
+	body, err := json.Marshal(response)
+	if err != nil {
+		ctx.SetBodyString(err.Error())
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return
+	}
+	ctx.SetBody(body)
+	ctx.SetStatusCode(fasthttp.StatusOK)
 }
