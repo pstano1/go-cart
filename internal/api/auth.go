@@ -19,6 +19,7 @@ const (
 )
 
 type JWTConfig struct {
+	Username       string    `json:"username"`
 	User           *pkg.User `json:"user"`
 	ExpirationTime int64     `json:"exp"`
 	IssuedAt       int64     `json:"iat"`
@@ -69,6 +70,7 @@ func (a *InstanceAPI) SignUserIn(credentials *pkg.Credentials) (*pkg.SignInRespo
 	now := time.Now()
 	JWT, err := a.generateJWT(&JWTConfig{
 		User:           &user,
+		Username:       credentials.Username,
 		ExpirationTime: now.Unix() + 3600,
 		IssuedAt:       now.Unix(),
 	})

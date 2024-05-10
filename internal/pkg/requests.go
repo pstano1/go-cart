@@ -6,7 +6,7 @@ type Credentials struct {
 }
 
 type UserCreate struct {
-	CustomerId    string   `json:"customerId"`
+	CustomerSpecificModel
 	Username      string   `json:"username"`
 	Password      string   `json:"password"`
 	PasswordCheck string   `json:"passwordCheck"`

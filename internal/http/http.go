@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"log"
+	"reflect"
 	"strings"
 	"time"
 
@@ -47,8 +48,11 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	r := router.New()
 	api := r.Group("/api")
 
+	customers := api.Group("/customer")
+	customers.GET("/id/{tag}", i.getCustomerId)
+
 	users := api.Group("/user")
-	users.GET("/", i.authMiddleware(i.getUser))
+	users.GET("/", i.authMiddleware(i.sameCustomerOperation(i.getUser)))
 	users.POST("/", i.createUser)
 	// users.POST("/", i.authMiddleware(i.createUser))
 	users.PATCH("/", i.authMiddleware(i.updateUser))
@@ -56,8 +60,9 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	users.POST("/signin", i.signUserIn)
 	users.POST("/refresh", i.refreshToken)
 
-	customers := api.Group("/customer")
-	customers.GET("/id/{tag}", i.getCustomerId)
+	_ = api.Group("/products")
+
+	_ = api.Group("/orders")
 
 	return r
 }
@@ -114,6 +119,52 @@ func (i *HTTPInstanceAPI) corsMiddleware(next fasthttp.RequestHandler) fasthttp.
 	}
 }
 
+func (i *HTTPInstanceAPI) sameCustomerOperation(next fasthttp.RequestHandler) fasthttp.RequestHandler {
+	return func(ctx *fasthttp.RequestCtx) {
+		var customerId []byte
+		if string(ctx.Method()) == "GET" || string(ctx.Method()) == "DELETE" {
+			customerId = ctx.Request.URI().QueryArgs().Peek("customerId")
+			if customerId == nil {
+				ctx.Error("no customerId specified", fasthttp.StatusBadRequest)
+				return
+			}
+		} else {
+			payload, err := validateBody[interface{}](ctx)
+			if err != nil {
+				ctx.Error("error while processing payload", fasthttp.StatusInternalServerError)
+				return
+			}
+			ref := reflect.TypeOf(payload)
+			for i := 0; i < ref.NumField(); i++ {
+				field := ref.Field(i)
+				if field.Name == "CustomerId" {
+					customerId = reflect.ValueOf(payload).Field(i).Bytes()
+					break
+				}
+			}
+			if customerId == nil {
+				ctx.Error("no customerId specified", fasthttp.StatusBadRequest)
+				return
+			}
+		}
+		if ok, _ := i.api.ValidateCustomerId(string(customerId)); !ok {
+			ctx.Error("customer with this id does not exist", fasthttp.StatusBadRequest)
+			return
+		}
+		user, err := i.api.GetUserFromRequest(ctx)
+		if err != nil {
+			ctx.Error("error while retrieving user", fasthttp.StatusInternalServerError)
+			return
+		}
+		if user.CustomerId != string(customerId) {
+			ctx.Error("cross customer operation", fasthttp.StatusForbidden)
+			return
+		}
+
+		next(ctx)
+	}
+}
+
 func validateBody[T any](ctx *fasthttp.RequestCtx) (*T, error) {
 	ctx.SetUserValue("startTime", time.Now())
 	var postBody T
@@ -147,7 +198,7 @@ func (i *HTTPInstanceAPI) getCustomerId(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-	response, err := i.api.ExhchangeTagForId(tag)
+	response, err := i.api.ExchangeTagForId(tag)
 	if err != nil {
 		ctx.SetBodyString(err.Error())
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)

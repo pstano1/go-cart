@@ -9,6 +9,11 @@ func (a *InstanceAPI) GetUsers(filter *pkg.UserFilter) ([]pkg.User, error) {
 	return a.dbController.GetUsers(filter)
 }
 
-func (a *InstanceAPI) ExhchangeTagForId(tag string) (*pb.ExchangeTagForIdResponse, error) {
+func (a *InstanceAPI) ExchangeTagForId(tag string) (*pb.ExchangeTagForIdResponse, error) {
 	return a.customerService.ExchangeTagForId(tag)
+}
+
+func (a *InstanceAPI) ValidateCustomerId(id string) (bool, error) {
+	res, err := a.customerService.ValidateId(id)
+	return res.Ok, err
 }

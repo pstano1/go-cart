@@ -23,6 +23,10 @@ func migrateDatabase(db *gorm.DB) {
 	err := db.AutoMigrate(
 		&pkg.User{},
 		&pkg.Permission{},
+		&pkg.Product{},
+		&pkg.ProductCategory{},
+		&pkg.Order{},
+		&pkg.Coupon{},
 	)
 	if err != nil {
 		log.Fatalf("error occured while migrating database: %v", err)
