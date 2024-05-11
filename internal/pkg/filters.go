@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"strings"
+
 	"github.com/valyala/fasthttp"
 )
 
@@ -21,5 +23,21 @@ func (f UserFilter) Populate(ctx *fasthttp.RequestCtx) Filter {
 		Id:         string(args.Peek("id")),
 		Username:   string(args.Peek("username")),
 		CustomerId: string(args.Peek("customerId")),
+	}
+}
+
+type ProductFilter struct {
+	Id         string
+	CustomerId string
+	Categories []string
+}
+
+func (f ProductFilter) Populate(ctx *fasthttp.RequestCtx) Filter {
+	args := ctx.QueryArgs()
+
+	return &ProductFilter{
+		Id:         string(args.Peek("id")),
+		CustomerId: string(args.Peek("customerId")),
+		Categories: strings.Split(string(args.Peek("categories")), ","),
 	}
 }

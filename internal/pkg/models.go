@@ -1,11 +1,28 @@
 package pkg
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
+
+type JSONB map[string]interface{}
+
+func (j JSONB) Value() (driver.Value, error) {
+	return json.Marshal(j)
+}
+
+func (j *JSONB) Scan(value interface{}) error {
+	data, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	return json.Unmarshal(data, &j)
+}
 
 type CustomerSpecificModel struct {
 	CustomerId string `json:"customerId"`
@@ -34,36 +51,46 @@ type Permission struct {
 
 type Product struct {
 	CustomerSpecificModel
-	Id          string         `gorm:"primarykey" json:"id"`
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
-	Categories  pq.StringArray `gorm:"type:text[]" json:"categories"`
-	Prices      []Price        `gorm:"type:jsonb" json:"prices"`
+	Id           string         `gorm:"primarykey" json:"id"`
+	CreatedAt    time.Time      `json:"-"`
+	UpdatedAt    time.Time      `json:"-"`
+	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
+	Name         string         `json:"name"`
+	Descriptions JSONB          `gorm:"type:jsonb" json:"descriptions"`
+	Categories   pq.StringArray `gorm:"type:text[]" json:"categories"`
+	Prices       JSONB          `gorm:"type:jsonb" json:"prices"`
 }
 
 type ProductCategory struct {
 	CustomerSpecificModel
-	Name string `gorm:"primarykey" json:"name"`
-}
-
-type Price struct {
-	Rate     float32 `json:"rate"`
-	Currency string  `json:"size:3"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	Name      string         `gorm:"primarykey" json:"name"`
 }
 
 type Coupon struct {
 	CustomerSpecificModel
-	PromoCode  string         `gorm:"primarykey" json:"promoCode"`
+	Id         string         `gorm:"primarykey" json:"id"`
+	CreatedAt  time.Time      `json:"-"`
+	UpdatedAt  time.Time      `json:"-"`
+	PromoCode  string         `json:"promoCode"`
+	Amount     int            `json:"amount"`
+	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
 	Categories pq.StringArray `gorm:"type:text[]" json:"categories"`
+	IsActive   bool           `json:"isActive"`
 }
 
 type Order struct {
 	CustomerSpecificModel
-	Id         string `gorm:"primarykey" json:"id"`
-	TotalCost  int    `json:"totalCost"`
-	Currency   string `gorm:"size:3" json:"currency"`
-	Country    string `gorm:"size:2" json:"country"`
-	City       string `json:"city"`
-	PostalCode string `json:"postalCode"`
-	Address    string `json:"address"`
+	Id         string         `gorm:"primarykey" json:"id"`
+	CreatedAt  time.Time      `json:"-"`
+	UpdatedAt  time.Time      `json:"-"`
+	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
+	TotalCost  int            `json:"totalCost"`
+	Currency   string         `gorm:"size:3" json:"currency"`
+	Country    string         `gorm:"size:2" json:"country"`
+	City       string         `json:"city"`
+	PostalCode string         `json:"postalCode"`
+	Address    string         `json:"address"`
 }

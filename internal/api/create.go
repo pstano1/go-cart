@@ -11,6 +11,7 @@ import (
 func (a *InstanceAPI) CreateUser(request *pkg.UserCreate) (*string, error) {
 	a.log.Debug("creating account",
 		zap.String("username", request.Username),
+		zap.String("customer", request.CustomerId),
 	)
 	var user pkg.User
 	err := copier.Copy(&user, request)
@@ -50,4 +51,56 @@ func (a *InstanceAPI) CreateUser(request *pkg.UserCreate) (*string, error) {
 		return nil, pkg.ErrCreatingUser
 	}
 	return &user.Id, nil
+}
+
+func (a *InstanceAPI) CreateProduct(request *pkg.ProductCreate) (*string, error) {
+	a.log.Debug("creating product",
+		zap.String("name", request.Name),
+		zap.String("customer", request.CustomerId),
+	)
+	var product pkg.Product
+	err := copier.Copy(&product, request)
+	if err != nil {
+		a.log.Error("error while copying request",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+	descriptions := make(map[string]interface{})
+	err = product.Descriptions.Scan(&descriptions)
+	if err != nil {
+		a.log.Error("error while unmarshaling product descriptions",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+	for key, value := range descriptions {
+		if !isValidDescription(key, value) {
+			return nil, pkg.ErrInvalidDescriptionKeyOrValue
+		}
+	}
+	// TODO: retrieve categories and check if they exist
+	prices := make(map[string]interface{})
+	err = product.Prices.Scan(&prices)
+	if err != nil {
+		a.log.Error("error while unmarshaling product prices",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+	for key, value := range descriptions {
+		if !isValidPrice(key, value) {
+			return nil, pkg.ErrInvalidPriceKeyOrValue
+		}
+	}
+	product.Id = uuid.New().String()
+	err = a.dbController.Create(&product)
+	if err != nil {
+		a.log.Error("error while creating product",
+			zap.String("name", request.Name),
+			zap.Error(err),
+		)
+		return nil, pkg.ErrCreatingProduct
+	}
+	return &product.Id, nil
 }

@@ -14,6 +14,7 @@ type IDBController interface {
 	Delete(model interface{}, conditions ...interface{}) error
 
 	GetUsers(filter *pkg.UserFilter) ([]pkg.User, error)
+	GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, error)
 }
 
 type DBController struct {

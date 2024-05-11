@@ -1,6 +1,8 @@
 package api
 
 import (
+	"regexp"
+
 	"github.com/pstano1/customer-api/client"
 	"github.com/pstano1/go-cart/internal/db"
 	"go.uber.org/zap"
@@ -36,4 +38,35 @@ func getHash(password []byte) (string, error) {
 		return "", err
 	}
 	return string(hash), nil
+}
+
+func isValidPrice(key string, value interface{}) bool {
+	regex := regexp.MustCompile(`^[A-Z]{2}$`)
+	if !regex.MatchString(key) {
+		return false
+	}
+
+	switch value.(type) {
+	case float64:
+		return true
+	case int:
+		return true
+	case float32:
+		return true
+	default:
+		return false
+	}
+}
+
+func isValidDescription(key string, value interface{}) bool {
+	regex := regexp.MustCompile(`^[A-Z]{2,3}$`)
+	if !regex.MatchString(key) {
+		return false
+	}
+
+	if desc, ok := value.(string); ok {
+		return len(desc) > 0
+	}
+
+	return false
 }

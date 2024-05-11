@@ -3,7 +3,6 @@ package http
 import (
 	"encoding/json"
 	"log"
-	"reflect"
 	"strings"
 	"time"
 
@@ -60,7 +59,11 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	users.POST("/signin", i.signUserIn)
 	users.POST("/refresh", i.refreshToken)
 
-	_ = api.Group("/products")
+	products := api.Group("/product")
+	products.GET("/", i.authMiddleware(i.sameCustomerOperation(i.getProduct)))
+	products.POST("/", i.authMiddleware(i.sameCustomerOperation(i.createProduct)))
+	products.PATCH("/", i.authMiddleware(i.sameCustomerOperation(i.updateProduct)))
+	products.DELETE("/{id}", i.authMiddleware(i.sameCustomerOperation(i.deleteProduct)))
 
 	_ = api.Group("/orders")
 
@@ -129,23 +132,16 @@ func (i *HTTPInstanceAPI) sameCustomerOperation(next fasthttp.RequestHandler) fa
 				return
 			}
 		} else {
-			payload, err := validateBody[interface{}](ctx)
+			payload, err := validateBody[pkg.CustomerSpecificModel](ctx)
 			if err != nil {
 				ctx.Error("error while processing payload", fasthttp.StatusInternalServerError)
 				return
 			}
-			ref := reflect.TypeOf(payload)
-			for i := 0; i < ref.NumField(); i++ {
-				field := ref.Field(i)
-				if field.Name == "CustomerId" {
-					customerId = reflect.ValueOf(payload).Field(i).Bytes()
-					break
-				}
-			}
-			if customerId == nil {
+			if payload.CustomerId == "" {
 				ctx.Error("no customerId specified", fasthttp.StatusBadRequest)
 				return
 			}
+			customerId = []byte(payload.CustomerId)
 		}
 		if ok, _ := i.api.ValidateCustomerId(string(customerId)); !ok {
 			ctx.Error("customer with this id does not exist", fasthttp.StatusBadRequest)
@@ -171,6 +167,7 @@ func validateBody[T any](ctx *fasthttp.RequestCtx) (*T, error) {
 	validate := validator.New()
 	body := ctx.Request.Body()
 	if err := json.Unmarshal(body, &postBody); err != nil {
+		zap.Error(err)
 		return &postBody, pkg.ErrUnableToReadPayload
 	}
 	if err := validate.Struct(postBody); err != nil {

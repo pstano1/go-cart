@@ -79,7 +79,7 @@ func (i *HTTPInstanceAPI) deleteUser(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-	if err := i.api.DeleteUser(&pkg.User{Id: userId}); err != nil {
+	if err := i.api.Delete(&pkg.User{Id: userId}); err != nil {
 		ctx.SetBodyString(err.Error())
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return

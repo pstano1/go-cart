@@ -8,7 +8,7 @@ import (
 
 func (a *InstanceAPI) UpdateUser(request *pkg.UserUpdate) error {
 	a.log.Debug("updating account info",
-		zap.String("accoutn", request.Id),
+		zap.String("account", request.Id),
 	)
 	users, err := a.GetUsers(&pkg.UserFilter{
 		Id: request.Id,
@@ -29,6 +29,32 @@ func (a *InstanceAPI) UpdateUser(request *pkg.UserUpdate) error {
 	if err != nil {
 		a.log.Debug(err.Error())
 		return pkg.ErrUpdatingUser
+	}
+	return nil
+}
+
+func (a *InstanceAPI) UpdateProduct(request *pkg.ProductUpdate) error {
+	a.log.Debug("updating product info",
+		zap.String("id", request.Id),
+	)
+	product, err := a.GetProducts(&pkg.ProductFilter{
+		Id: request.Id,
+	})
+	if err != nil {
+		a.log.Error("Could not retrieve product",
+			zap.Error(err),
+		)
+		return pkg.ErrProductNotFound
+	}
+	err = copier.Copy(&product, request)
+	if err != nil {
+		a.log.Debug(err.Error())
+		return err
+	}
+	err = a.dbController.Update(product)
+	if err != nil {
+		a.log.Debug(err.Error())
+		return pkg.ErrUpdatingProduct
 	}
 	return nil
 }

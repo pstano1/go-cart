@@ -43,3 +43,44 @@ func (d *DBController) GetUsers(filter *pkg.UserFilter) ([]pkg.User, error) {
 	}
 	return users, nil
 }
+
+func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, error) {
+	var product pkg.Product
+	products := make([]pkg.Product, 0)
+	gormQuery := d.gormDB.Table("products").Select(`
+		products.id,
+		products.customer_id,
+		products.name,
+		products.descriptions,
+		products.categories,
+		products.prices
+	`)
+	if filter.Id != "" {
+		gormQuery = gormQuery.Where("products.id = ?", filter.Id)
+	}
+	if filter.CustomerId != "" {
+		gormQuery = gormQuery.Where("products.customer_id = ?", filter.CustomerId)
+	}
+	if len(filter.Categories) > 0 {
+		// TODO: make it select all products with at least one matching category
+	}
+	gormQuery = gormQuery.Where("products.deleted_at is null")
+	rows, err := gormQuery.Rows()
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		if err = rows.Scan(
+			&product.Id,
+			&product.CustomerId,
+			&product.Name,
+			&product.Descriptions,
+			&product.Categories,
+			&product.Prices,
+		); err != nil {
+			return nil, err
+		}
+		products = append(products, product)
+	}
+	return products, nil
+}

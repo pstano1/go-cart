@@ -17,3 +17,7 @@ func (a *InstanceAPI) ValidateCustomerId(id string) (bool, error) {
 	res, err := a.customerService.ValidateId(id)
 	return res.Ok, err
 }
+
+func (a *InstanceAPI) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, error) {
+	return a.dbController.GetProducts(filter)
+}
