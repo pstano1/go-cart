@@ -1,6 +1,9 @@
 package db
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/pstano1/go-cart/internal/pkg"
 )
 
@@ -61,8 +64,12 @@ func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, er
 	if filter.CustomerId != "" {
 		gormQuery = gormQuery.Where("products.customer_id = ?", filter.CustomerId)
 	}
-	if len(filter.Categories) > 0 {
-		// TODO: make it select all products with at least one matching category
+	if filter.Categories[0] != "" {
+		var conditions []string
+		for _, category := range filter.Categories {
+			conditions = append(conditions, fmt.Sprintf("'%s' = ANY(products.categories)", category))
+		}
+		gormQuery = gormQuery.Where("(" + strings.Join(conditions, " OR ") + ")")
 	}
 	gormQuery = gormQuery.Where("products.deleted_at is null")
 	rows, err := gormQuery.Rows()

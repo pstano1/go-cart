@@ -41,7 +41,7 @@ func getHash(password []byte) (string, error) {
 }
 
 func isValidPrice(key string, value interface{}) bool {
-	regex := regexp.MustCompile(`^[A-Z]{2}$`)
+	regex := regexp.MustCompile(`^[A-Z]{3}$`)
 	if !regex.MatchString(key) {
 		return false
 	}
@@ -59,7 +59,7 @@ func isValidPrice(key string, value interface{}) bool {
 }
 
 func isValidDescription(key string, value interface{}) bool {
-	regex := regexp.MustCompile(`^[A-Z]{2,3}$`)
+	regex := regexp.MustCompile(`^[A-Z]{2}$`)
 	if !regex.MatchString(key) {
 		return false
 	}

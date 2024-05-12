@@ -8,6 +8,7 @@ import (
 
 	"github.com/fasthttp/router"
 	"github.com/gbrlsnchs/jwt"
+	"github.com/jinzhu/copier"
 	"github.com/pstano1/go-cart/internal/api"
 	"github.com/pstano1/go-cart/internal/pkg"
 	"github.com/valyala/fasthttp"
@@ -182,6 +183,10 @@ func validateFilter[T pkg.Filter](ctx *fasthttp.RequestCtx) (T, error) {
 	validate := validator.New()
 	f := filter.Populate(ctx)
 	if err := validate.Struct(f); err != nil {
+		return filter, err
+	}
+	err := copier.Copy(&filter, f)
+	if err != nil {
 		return filter, err
 	}
 	return filter, nil

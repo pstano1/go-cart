@@ -66,29 +66,13 @@ func (a *InstanceAPI) CreateProduct(request *pkg.ProductCreate) (*string, error)
 		)
 		return nil, err
 	}
-	descriptions := make(map[string]interface{})
-	err = product.Descriptions.Scan(&descriptions)
-	if err != nil {
-		a.log.Error("error while unmarshaling product descriptions",
-			zap.Error(err),
-		)
-		return nil, err
-	}
-	for key, value := range descriptions {
+	for key, value := range product.Descriptions {
 		if !isValidDescription(key, value) {
 			return nil, pkg.ErrInvalidDescriptionKeyOrValue
 		}
 	}
 	// TODO: retrieve categories and check if they exist
-	prices := make(map[string]interface{})
-	err = product.Prices.Scan(&prices)
-	if err != nil {
-		a.log.Error("error while unmarshaling product prices",
-			zap.Error(err),
-		)
-		return nil, err
-	}
-	for key, value := range descriptions {
+	for key, value := range product.Prices {
 		if !isValidPrice(key, value) {
 			return nil, pkg.ErrInvalidPriceKeyOrValue
 		}
