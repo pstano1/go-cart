@@ -4,11 +4,13 @@ import axios, {
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from 'axios'
-import { Credentials } from './pkg/requests'
+import { Credentials, ProductCreate } from './pkg/requests'
+import { IProduct } from './pkg/models'
 
 interface IAPI {
   signUserIn(credentials: Credentials): Promise<AxiosResponse<any>>
-  getProducts(): Promise<AxiosResponse<any>>
+  getProducts(id?: string, categories?: string): Promise<AxiosResponse<IProduct[]>>
+  createProduct(product: ProductCreate): Promise<AxiosResponse<void>>
 }
 
 class API implements IAPI {
@@ -33,11 +35,7 @@ class API implements IAPI {
   private customerIdInjector(
     requestConfig: InternalAxiosRequestConfig<any>,
   ): InternalAxiosRequestConfig<any> {
-    const customerId = localStorage.getItem('customerId')
-    // TODO: don't send request except getCustomerId
-    if (!customerId) {
-      return requestConfig
-    }
+    const customerId: string = localStorage.getItem('customerId')
     if (requestConfig.method === 'get' || requestConfig.method === 'delete') {
       requestConfig.params = { ...requestConfig.params, customerId }
     } else {
@@ -73,8 +71,22 @@ class API implements IAPI {
     return this.instance.post('/user/signin', { ...credentials })
   }
 
-  public async getProducts(): Promise<AxiosResponse<any>> {
-    return this.injectSessionToken((mergedConfig) => this.instance.get('/product', mergedConfig))()
+  public async getProducts(id?: string, categories?: string): Promise<AxiosResponse<any>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.get('/product/', {
+        ...mergedConfig,
+        params: {
+          ...(id && { id }),
+          ...(categories && { categories }),
+        },
+      }),
+    )()
+  }
+
+  public async createProduct(product: ProductCreate): Promise<AxiosResponse<void>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.post('/product/', product, mergedConfig),
+    )()
   }
 
   public setupInterceptors() {

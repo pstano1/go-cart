@@ -1,10 +1,5 @@
-export interface Credentials {
-  customerId?: string
-  username: string
-  password: string
-}
-
-export interface ProductCreate {
+export interface IProduct {
+  id: string
   name: string
   categories: string[]
   descriptions: {

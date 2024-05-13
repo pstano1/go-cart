@@ -48,7 +48,6 @@ func (d *DBController) GetUsers(filter *pkg.UserFilter) ([]pkg.User, error) {
 }
 
 func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, error) {
-	var product pkg.Product
 	products := make([]pkg.Product, 0)
 	gormQuery := d.gormDB.Table("products").Select(`
 		products.id,
@@ -77,6 +76,7 @@ func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, er
 		return nil, err
 	}
 	for rows.Next() {
+		var product pkg.Product
 		if err = rows.Scan(
 			&product.Id,
 			&product.CustomerId,
