@@ -4,19 +4,20 @@ import RequireAuth from './auth/RequireAuth'
 // views
 import signIn from './pages/signIn'
 import Dashboard from './pages/dashboard'
+import Products from './pages/products'
 
-import Nav from './components/nav'
-
-const Layout = {
-  view: (vnode: m.Vnode<any, any>) => {
-    return m('div', [m(Nav), m(vnode.attrs.contentComponent)])
-  },
-}
+// layout
+import Layout from './components/layout'
 
 m.route(document.body, '/signin', {
   '/': {
     render: () => {
       return m(RequireAuth, m(Layout, { contentComponent: Dashboard }))
+    },
+  },
+  '/products': {
+    render: () => {
+      return m(RequireAuth, m(Layout, { contentComponent: Products }))
     },
   },
   '/signin': {

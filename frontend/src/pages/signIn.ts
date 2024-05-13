@@ -1,6 +1,8 @@
 import m from 'mithril'
-import axios, { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { ISignInResponse } from '../auth/models'
+import API from '../api'
+import { Credentials } from '../pkg/requests'
 
 interface ISignInView extends m.Component {
   isSent: boolean
@@ -13,16 +15,19 @@ const signIn: ISignInView = {
     event.preventDefault()
 
     const formData = new FormData(event.target as HTMLFormElement)
-    let credentials: { [key: string]: string } = {}
-
-    for (let [key, value] of formData.entries()) {
-      credentials[key] = value as string
+    let credentials: Credentials = {
+      username: '',
+      password: '',
     }
 
-    axios
-      .post('http://localhost:8000/api/user/signin', {
-        ...credentials,
-      })
+    for (let [key, value] of formData.entries()) {
+      if (key === 'username') {
+        credentials.username = value as string
+      }
+      credentials.password = value as string
+    }
+
+    API.signUserIn(credentials)
       .then((res: AxiosResponse<ISignInResponse>) => res.data)
       .then((data: ISignInResponse) => {
         localStorage.setItem('sessionToken', data.sessionToken)
