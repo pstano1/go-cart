@@ -55,16 +55,20 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	users.GET("/", i.authMiddleware(i.sameCustomerOperation(i.getUser)))
 	users.POST("/", i.createUser)
 	// users.POST("/", i.authMiddleware(i.createUser))
-	users.PATCH("/", i.authMiddleware(i.updateUser))
+	users.PUT("/", i.authMiddleware(i.updateUser))
 	users.DELETE("/{id}", i.authMiddleware(i.deleteUser))
 	users.POST("/signin", i.signUserIn)
 	users.POST("/refresh", i.refreshToken)
 
 	products := api.Group("/product")
-	products.GET("/", i.authMiddleware(i.sameCustomerOperation(i.getProduct)))
+	products.GET("/", i.getProduct)
 	products.POST("/", i.authMiddleware(i.sameCustomerOperation(i.createProduct)))
-	products.PATCH("/", i.authMiddleware(i.sameCustomerOperation(i.updateProduct)))
+	products.PUT("/", i.authMiddleware(i.sameCustomerOperation(i.updateProduct)))
 	products.DELETE("/{id}", i.authMiddleware(i.sameCustomerOperation(i.deleteProduct)))
+	products.GET("/category", i.getCategory)
+	products.POST("/category", i.authMiddleware(i.sameCustomerOperation(i.createCategory)))
+	products.PUT("/category", i.authMiddleware(i.sameCustomerOperation(i.updateCategory)))
+	products.DELETE("/category", i.authMiddleware(i.sameCustomerOperation(i.deleteCategory)))
 
 	_ = api.Group("/orders")
 

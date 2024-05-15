@@ -18,4 +18,5 @@ var (
 	ErrInvalidPriceKeyOrValue       = errors.New("invalid key or value provided for price")
 	ErrProductNotFound              = errors.New("product not found in the repository")
 	ErrUpdatingProduct              = errors.New("could not update product")
+	ErrCreatingCategory             = errors.New("could not create category")
 )

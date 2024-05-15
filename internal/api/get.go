@@ -21,3 +21,7 @@ func (a *InstanceAPI) ValidateCustomerId(id string) (bool, error) {
 func (a *InstanceAPI) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, error) {
 	return a.dbController.GetProducts(filter)
 }
+
+func (a *InstanceAPI) GetCategories(filter *pkg.CategoryFilter) ([]string, error) {
+	return a.dbController.GetCategories(filter)
+}

@@ -63,7 +63,7 @@ func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, er
 	if filter.CustomerId != "" {
 		gormQuery = gormQuery.Where("products.customer_id = ?", filter.CustomerId)
 	}
-	if filter.Categories[0] != "" {
+	if len(filter.Categories) > 0 && filter.Categories[0] != "" {
 		var conditions []string
 		for _, category := range filter.Categories {
 			conditions = append(conditions, fmt.Sprintf("'%s' = ANY(products.categories)", category))
@@ -90,4 +90,32 @@ func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, er
 		products = append(products, product)
 	}
 	return products, nil
+}
+
+func (d *DBController) GetCategories(filter *pkg.CategoryFilter) ([]string, error) {
+	categories := make([]string, 0)
+	gormQuery := d.gormDB.Table("product_categories").Select(`
+		product_categories.name
+	`)
+	if filter.Id != "" {
+		gormQuery = gormQuery.Where("product_categories.id = ?", filter.Id)
+	}
+	if filter.CustomerId != "" {
+		gormQuery = gormQuery.Where("product_categories.customer_id = ?", filter.CustomerId)
+	}
+	gormQuery = gormQuery.Where("product_categories.deleted_at is null")
+	rows, err := gormQuery.Rows()
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var category string
+		if err = rows.Scan(
+			&category,
+		); err != nil {
+			return nil, err
+		}
+		categories = append(categories, category)
+	}
+	return categories, nil
 }

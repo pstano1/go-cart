@@ -66,7 +66,8 @@ type ProductCategory struct {
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
-	Name      string         `gorm:"primarykey" json:"name"`
+	Name      string         `json:"name"`
+	Id        string         `gorm:"primarykey" json:"id"`
 }
 
 type Coupon struct {

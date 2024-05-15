@@ -14,3 +14,11 @@ export interface ProductCreate {
     [key: string]: number
   }
 }
+
+export interface ProductUpdate extends ProductCreate {
+  id: string
+}
+
+export interface CategoryCreate {
+  name: string
+}

@@ -37,7 +37,7 @@ func (a *InstanceAPI) UpdateProduct(request *pkg.ProductUpdate) error {
 	a.log.Debug("updating product info",
 		zap.String("id", request.Id),
 	)
-	product, err := a.GetProducts(&pkg.ProductFilter{
+	products, err := a.GetProducts(&pkg.ProductFilter{
 		Id: request.Id,
 	})
 	if err != nil {
@@ -46,12 +46,40 @@ func (a *InstanceAPI) UpdateProduct(request *pkg.ProductUpdate) error {
 		)
 		return pkg.ErrProductNotFound
 	}
+	product := products[0]
 	err = copier.Copy(&product, request)
 	if err != nil {
 		a.log.Debug(err.Error())
 		return err
 	}
 	err = a.dbController.Update(product)
+	if err != nil {
+		a.log.Debug(err.Error())
+		return pkg.ErrUpdatingProduct
+	}
+	return nil
+}
+
+func (a *InstanceAPI) UpdateCategory(request *pkg.CategoryUpdate) error {
+	a.log.Debug("updating category info",
+		zap.String("id", request.Id),
+	)
+	categories, err := a.GetCategories(&pkg.CategoryFilter{
+		Id: request.Id,
+	})
+	if err != nil {
+		a.log.Error("Could not retrieve category",
+			zap.Error(err),
+		)
+		return pkg.ErrProductNotFound
+	}
+	category := categories[0]
+	err = copier.Copy(&category, request)
+	if err != nil {
+		a.log.Debug(err.Error())
+		return err
+	}
+	err = a.dbController.Update(category)
 	if err != nil {
 		a.log.Debug(err.Error())
 		return pkg.ErrUpdatingProduct

@@ -88,3 +88,28 @@ func (a *InstanceAPI) CreateProduct(request *pkg.ProductCreate) (*string, error)
 	}
 	return &product.Id, nil
 }
+
+func (a *InstanceAPI) CreateCategory(request *pkg.CategoryCreate) (*string, error) {
+	a.log.Debug("creating category",
+		zap.String("name", request.Name),
+		zap.String("customer", request.CustomerId),
+	)
+	var category pkg.ProductCategory
+	err := copier.Copy(&category, request)
+	if err != nil {
+		a.log.Error("error while copying request",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+	category.Id = uuid.New().String()
+	err = a.dbController.Create(&category)
+	if err != nil {
+		a.log.Error("error while creating category",
+			zap.String("name", request.Name),
+			zap.Error(err),
+		)
+		return nil, pkg.ErrCreatingCategory
+	}
+	return &category.Id, nil
+}

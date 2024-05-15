@@ -39,3 +39,14 @@ type ProductUpdate struct {
 	Categories   pq.StringArray `json:"categories"`
 	Prices       JSONB          `json:"prices"`
 }
+
+type CategoryCreate struct {
+	CustomerSpecificModel
+	Name string `json:"name"`
+}
+
+type CategoryUpdate struct {
+	CustomerSpecificModel
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
