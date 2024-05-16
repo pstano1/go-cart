@@ -13,7 +13,6 @@ interface ICreateProductView extends m.Component {
 const CreateProduct: ICreateProductView = {
   handleSubmit: (event: Event): void => {
     event.preventDefault()
-    console.log('here')
 
     const formData = new FormData(event.target as HTMLFormElement)
     let newProduct: ProductCreate = {

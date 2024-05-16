@@ -64,22 +64,11 @@ func (a *InstanceAPI) UpdateCategory(request *pkg.CategoryUpdate) error {
 	a.log.Debug("updating category info",
 		zap.String("id", request.Id),
 	)
-	categories, err := a.GetCategories(&pkg.CategoryFilter{
-		Id: request.Id,
+	err := a.dbController.Update(&pkg.ProductCategory{
+		Id:                    request.Id,
+		Name:                  request.Name,
+		CustomerSpecificModel: request.CustomerSpecificModel,
 	})
-	if err != nil {
-		a.log.Error("Could not retrieve category",
-			zap.Error(err),
-		)
-		return pkg.ErrCategoryNotFound
-	}
-	category := categories[0]
-	err = copier.Copy(&category, request)
-	if err != nil {
-		a.log.Debug(err.Error())
-		return err
-	}
-	err = a.dbController.Update(category)
 	if err != nil {
 		a.log.Debug(err.Error())
 		return pkg.ErrUpdatingCategory

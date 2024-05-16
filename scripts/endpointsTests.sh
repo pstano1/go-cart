@@ -55,6 +55,149 @@ statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
 
 interpretStatus "$statusCode" "/user/refresh"
 
+# POST /product/category
+# Create a product category
+payload=$(cat <<EOF
+{
+  "name": "$(openssl rand -hex 8)",
+  "customerId": "$customerId"
+}
+EOF
+)
+
+response=$(curl -s -w "\n%{http_code}" -X POST \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/product/category")
+
+body=$(echo "$response" | sed '$d')
+categoryId=$(echo "$body" | jq -r '.id')
+statusCode=$(echo "$response" | tail -n 1)
+
+interpretStatus "$statusCode" "POST /product/category"
+
+# GET /product/category
+# Get product category(ies)
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
+    -H "Content-Type: application/json" \
+    "$URL/product/category")
+
+interpretStatus "$statusCode" "GET /product/category"
+
+# PUT /product/category
+# Update a product category
+payload=$(cat <<EOF
+{
+  "id": "$categoryId",
+  "name": "$(openssl rand -hex 8)",
+  "customerId": "$customerId"
+}
+EOF
+)
+
+response=$(curl -s -w "\n%{http_code}" -X PUT \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/product/category")
+
+statusCode=$(echo "$response" | tail -n 1)
+
+interpretStatus "$statusCode" "PUT /product/category"
+
+# GET /product
+# Get product(s)
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
+    -H "Content-Type: application/json" \
+    "$URL/product/")
+
+interpretStatus "$statusCode" "GET /product"
+
+# POST /product
+# Create a product
+payload=$(cat <<EOF
+{
+  "name": "product #0",
+  "categories": [
+    "test-1"
+  ],
+  "prices": {
+    "PLN": 20,
+    "EUR": 4.5
+  },
+  "descriptions": {
+    "PL": "Lorem ipsum...",
+    "EN": "Lorem ipsum..."
+  },
+  "customerId": "$customerId"
+}
+EOF
+)
+
+response=$(curl -s -w "\n%{http_code}" -X POST \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/product/")
+
+body=$(echo "$response" | sed '$d')
+productId=$(echo "$body" | jq -r '.id')
+statusCode=$(echo "$response" | tail -n 1)
+
+interpretStatus "$statusCode" "POST /product"
+
+# PUT /product
+# Update a product
+payload=$(cat <<EOF
+{
+  "name": "product #123",
+  "categories": [
+    "test",
+    "test-1"
+  ],
+  "prices": {
+    "PLN": 20,
+    "EUR": 4.5
+  },
+  "descriptions": {
+    "PL": "Lorem ipsum...",
+    "EN": "Lorem ipsum..."
+  },
+  "customerId": "$customerId",
+  "id": "$productId"
+}
+EOF
+)
+
+response=$(curl -s -w "\n%{http_code}" -X PUT \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/product/")
+
+statusCode=$(echo "$response" | tail -n 1)
+
+interpretStatus "$statusCode" "PUT /product"
+
+# DELETE /product
+# DELETE a product
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    "$URL/product/$productId?customerId=$customerId")
+
+interpretStatus "$statusCode" "DELETE /product/{id}"
+
+# DELETE /product/category
+# DELETE a product category
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    "$URL/product/category/$categoryId?customerId=$customerId")
+
+interpretStatus "$statusCode" "DELETE /product/category/{id}"
+
 # POST /coupon
 # Create a coupon
 payload=$(cat <<EOF
@@ -66,17 +209,15 @@ payload=$(cat <<EOF
 EOF
 )
 
-couponId=$(curl -s -X POST \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $sessionToken" \
-    -d "$payload" \
-    "$URL/coupon/" | jq -r '.id')
-
-statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+response=$(curl -s -w "\n%{http_code}" -X POST \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $sessionToken" \
     -d "$payload" \
     "$URL/coupon/")
+
+body=$(echo "$response" | sed '$d')
+couponId=$(echo "$body" | jq -r '.id')
+statusCode=$(echo "$response" | tail -n 1)
 
 interpretStatus "$statusCode" "POST /coupon"
 

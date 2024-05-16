@@ -54,7 +54,7 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	users := api.Group("/user")
 	users.GET("/", i.authMiddleware(i.sameCustomerOperation(i.getUser)))
 	users.POST("/", i.createUser)
-	// users.POST("/", i.authMiddleware(i.createUser))
+	// users.POST("/", i.authMiddleware(i.sameCustomerOperation(i.createUser)))
 	users.PUT("/", i.authMiddleware(i.updateUser))
 	users.DELETE("/{id}", i.authMiddleware(i.deleteUser))
 	users.POST("/signin", i.signUserIn)
@@ -68,7 +68,7 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	products.GET("/category", i.getCategory)
 	products.POST("/category", i.authMiddleware(i.sameCustomerOperation(i.createCategory)))
 	products.PUT("/category", i.authMiddleware(i.sameCustomerOperation(i.updateCategory)))
-	products.DELETE("/category", i.authMiddleware(i.sameCustomerOperation(i.deleteCategory)))
+	products.DELETE("/category/{id}", i.authMiddleware(i.sameCustomerOperation(i.deleteCategory)))
 
 	coupons := api.Group("/coupon")
 	coupons.GET("/", i.getCoupon)

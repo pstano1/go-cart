@@ -28,7 +28,7 @@ const (
 )
 
 func main() {
-	logger := zap.Must(zap.NewProduction())
+	logger := zap.Must(zap.NewDevelopment())
 	defer logger.Sync()
 	server := createServerFromConfig(logger)
 	server.Run()

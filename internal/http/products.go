@@ -39,12 +39,21 @@ func (i *HTTPInstanceAPI) createProduct(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-	if _, err := i.api.CreateProduct(request); err != nil {
+	productId, err := i.api.CreateProduct(request)
+	if err != nil {
 		ctx.SetBodyString(err.Error())
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		return
 	}
-	ctx.SetBodyString("successfully created product")
+	response, err := json.Marshal(&pkg.ObjectCreateResponse{
+		Id: *productId,
+	})
+	if err != nil {
+		ctx.SetBodyString(err.Error())
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return
+	}
+	ctx.SetBody(response)
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 }
 
@@ -114,12 +123,21 @@ func (i *HTTPInstanceAPI) createCategory(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-	if _, err := i.api.CreateCategory(request); err != nil {
+	categoryId, err := i.api.CreateCategory(request)
+	if err != nil {
 		ctx.SetBodyString(err.Error())
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		return
 	}
-	ctx.SetBodyString("successfully created category")
+	response, err := json.Marshal(&pkg.ObjectCreateResponse{
+		Id: *categoryId,
+	})
+	if err != nil {
+		ctx.SetBodyString(err.Error())
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return
+	}
+	ctx.SetBody(response)
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 }
 
@@ -148,7 +166,7 @@ func (i *HTTPInstanceAPI) deleteCategory(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-	if err := i.api.Delete(&pkg.Product{Id: categoryId}); err != nil {
+	if err := i.api.Delete(&pkg.ProductCategory{Id: categoryId}); err != nil {
 		ctx.SetBodyString(err.Error())
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
