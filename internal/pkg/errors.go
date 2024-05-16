@@ -19,4 +19,8 @@ var (
 	ErrProductNotFound              = errors.New("product not found in the repository")
 	ErrUpdatingProduct              = errors.New("could not update product")
 	ErrCreatingCategory             = errors.New("could not create category")
+	ErrCategoryNotFound             = errors.New("could not find category")
+	ErrUpdatingCategory             = errors.New("could not update category")
+	ErrCouponNotFound               = errors.New("could not find coupon")
+	ErrUpdatingCoupon               = errors.New("could not update coupon")
 )

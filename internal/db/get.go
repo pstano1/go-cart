@@ -119,3 +119,39 @@ func (d *DBController) GetCategories(filter *pkg.CategoryFilter) ([]string, erro
 	}
 	return categories, nil
 }
+
+func (d *DBController) GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error) {
+	coupons := make([]pkg.Coupon, 0)
+	gormQuery := d.gormDB.Table("coupons").Select(`
+		coupons.id,
+		coupons.customer_id,
+		coupons.promo_code,
+		coupons.amount,
+		coupons.is_active
+	`)
+	if filter.Id != "" {
+		gormQuery = gormQuery.Where("coupons.id = ?", filter.Id)
+	}
+	if filter.CustomerId != "" {
+		gormQuery = gormQuery.Where("coupons.customer_id = ?", filter.CustomerId)
+	}
+	gormQuery = gormQuery.Where("coupons.deleted_at is null")
+	rows, err := gormQuery.Rows()
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var coupon pkg.Coupon
+		if err = rows.Scan(
+			&coupon.Id,
+			&coupon.CustomerId,
+			&coupon.PromoCode,
+			&coupon.Amount,
+			&coupon.IsActive,
+		); err != nil {
+			return nil, err
+		}
+		coupons = append(coupons, coupon)
+	}
+	return coupons, nil
+}

@@ -55,3 +55,17 @@ func (f CategoryFilter) Populate(ctx *fasthttp.RequestCtx) Filter {
 		CustomerId: string(args.Peek("customerId")),
 	}
 }
+
+type CouponFilter struct {
+	Id         string
+	CustomerId string
+}
+
+func (f CouponFilter) Populate(ctx *fasthttp.RequestCtx) Filter {
+	args := ctx.QueryArgs()
+
+	return &ProductFilter{
+		Id:         string(args.Peek("id")),
+		CustomerId: string(args.Peek("customerId")),
+	}
+}

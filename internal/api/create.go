@@ -113,3 +113,29 @@ func (a *InstanceAPI) CreateCategory(request *pkg.CategoryCreate) (*string, erro
 	}
 	return &category.Id, nil
 }
+
+func (a *InstanceAPI) CreateCoupon(request *pkg.CouponCreate) (*string, error) {
+	a.log.Debug("creating coupon",
+		zap.String("code", request.PromoCode),
+		zap.String("customer", request.CustomerId),
+	)
+	var coupon pkg.Coupon
+	err := copier.Copy(&coupon, request)
+	if err != nil {
+		a.log.Error("error while copying request",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+	coupon.Id = uuid.New().String()
+	coupon.IsActive = true
+	err = a.dbController.Create(&coupon)
+	if err != nil {
+		a.log.Error("error while creating coupon",
+			zap.String("code", request.PromoCode),
+			zap.Error(err),
+		)
+		return nil, pkg.ErrCreatingCategory
+	}
+	return &coupon.Id, nil
+}

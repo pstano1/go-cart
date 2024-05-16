@@ -25,3 +25,7 @@ func (a *InstanceAPI) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, err
 func (a *InstanceAPI) GetCategories(filter *pkg.CategoryFilter) ([]string, error) {
 	return a.dbController.GetCategories(filter)
 }
+
+func (a *InstanceAPI) GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error) {
+	return a.dbController.GetCoupons(filter)
+}

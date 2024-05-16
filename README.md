@@ -16,12 +16,13 @@
   - [] toasts;
 - backend:
   - [] orders;
-  - [] coupons;
+  - [*] coupons;
   - [] permissions;
   - [] tests;
-  - [] errors endpoints;
+  - [] errors;
   - [] add comments;
   - [] images storage;
+  - [] add price history;
 - other:
   - [] swagger;
   - [] makefile;

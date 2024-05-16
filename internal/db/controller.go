@@ -16,6 +16,7 @@ type IDBController interface {
 	GetUsers(filter *pkg.UserFilter) ([]pkg.User, error)
 	GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, error)
 	GetCategories(filter *pkg.CategoryFilter) ([]string, error)
+	GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error)
 }
 
 type DBController struct {

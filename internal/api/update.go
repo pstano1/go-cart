@@ -71,7 +71,7 @@ func (a *InstanceAPI) UpdateCategory(request *pkg.CategoryUpdate) error {
 		a.log.Error("Could not retrieve category",
 			zap.Error(err),
 		)
-		return pkg.ErrProductNotFound
+		return pkg.ErrCategoryNotFound
 	}
 	category := categories[0]
 	err = copier.Copy(&category, request)
@@ -82,7 +82,34 @@ func (a *InstanceAPI) UpdateCategory(request *pkg.CategoryUpdate) error {
 	err = a.dbController.Update(category)
 	if err != nil {
 		a.log.Debug(err.Error())
-		return pkg.ErrUpdatingProduct
+		return pkg.ErrUpdatingCategory
+	}
+	return nil
+}
+
+func (a *InstanceAPI) UpdateCoupon(request *pkg.CouponUpdate) error {
+	a.log.Debug("updating coupon info",
+		zap.String("id", request.Id),
+	)
+	coupons, err := a.GetCoupons(&pkg.CouponFilter{
+		Id: request.Id,
+	})
+	if err != nil {
+		a.log.Error("Could not retrieve coupon",
+			zap.Error(err),
+		)
+		return pkg.ErrCouponNotFound
+	}
+	coupon := coupons[0]
+	err = copier.Copy(&coupon, request)
+	if err != nil {
+		a.log.Debug(err.Error())
+		return err
+	}
+	err = a.dbController.Update(coupon)
+	if err != nil {
+		a.log.Debug(err.Error())
+		return pkg.ErrUpdatingCoupon
 	}
 	return nil
 }

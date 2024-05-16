@@ -50,3 +50,16 @@ type CategoryUpdate struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 }
+
+type CouponCreate struct {
+	CustomerSpecificModel
+	PromoCode string `json:"promoCode"`
+	Amount    int    `json:"amount"`
+}
+
+type CouponUpdate struct {
+	CustomerSpecificModel
+	Id        string `json:"id"`
+	PromoCode string `json:"promoCode"`
+	Amount    int    `json:"amount"`
+}
