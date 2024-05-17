@@ -137,3 +137,183 @@ func TestDescriptionValidator(t *testing.T) {
 		})
 	}
 }
+
+type ProductDescription struct {
+	key   string
+	value interface{}
+}
+
+func TestProductDescriptionValidator(t *testing.T) {
+	var tests = []struct {
+		name        string
+		basketEntry ProductDescription
+		want        bool
+	}{
+		{
+			name: "price as proper type (int)",
+			basketEntry: ProductDescription{
+				key:   "price",
+				value: 100,
+			},
+			want: true,
+		},
+		{
+			name: "price as proper type (float)",
+			basketEntry: ProductDescription{
+				key:   "price",
+				value: 100.00,
+			},
+			want: true,
+		},
+		{
+			name: "price as wrong type (string)",
+			basketEntry: ProductDescription{
+				key:   "price",
+				value: "100",
+			},
+			want: false,
+		},
+		{
+			name: "quantity as proper type (int)",
+			basketEntry: ProductDescription{
+				key:   "quantity",
+				value: 1,
+			},
+			want: true,
+		},
+		{
+			name: "quantity as wrong type (string)",
+			basketEntry: ProductDescription{
+				key:   "quantity",
+				value: "100",
+			},
+			want: false,
+		},
+		{
+			name: "currency as wrong type (int)",
+			basketEntry: ProductDescription{
+				key:   "currency",
+				value: 100,
+			},
+			want: false,
+		},
+		{
+			name: "currency with too short value",
+			basketEntry: ProductDescription{
+				key:   "currency",
+				value: "PL",
+			},
+			want: false,
+		},
+		{
+			name: "currency with too long value",
+			basketEntry: ProductDescription{
+				key:   "currency",
+				value: "polski złoty",
+			},
+			want: false,
+		},
+		{
+			name: "currency with digits as value",
+			basketEntry: ProductDescription{
+				key:   "currency",
+				value: "123",
+			},
+			want: false,
+		},
+		{
+			name: "proper currency value",
+			basketEntry: ProductDescription{
+				key:   "currency",
+				value: "PLN",
+			},
+			want: true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			ok := isValidBasketProductDescription(test.basketEntry.key, test.basketEntry.value)
+			if ok != test.want {
+				t.Errorf("%s - got %t, want %t", test.name, ok, test.want)
+			}
+		})
+	}
+}
+
+type BasketEntry struct {
+	key   string
+	value interface{}
+}
+
+func TestBasketEntryValidator(t *testing.T) {
+	var tests = []struct {
+		name        string
+		basketEntry BasketEntry
+		want        bool
+	}{
+		{
+			name: "value as wrong type (string)",
+			basketEntry: BasketEntry{
+				key:   "test-id",
+				value: "string",
+			},
+			want: false,
+		},
+		{
+			name: "value as wrong type (int)",
+			basketEntry: BasketEntry{
+				key:   "test-id",
+				value: 100,
+			},
+			want: false,
+		},
+		{
+			name: "incomplete value",
+			basketEntry: BasketEntry{
+				key: "test-id",
+				value: map[string]interface{}{
+					"price":    100,
+					"currency": "PLN",
+					"name":     "Product #0",
+				},
+			},
+			want: false,
+		},
+		{
+			name: "complete value with wrong data type",
+			basketEntry: BasketEntry{
+				key: "test-id",
+				value: map[string]interface{}{
+					"price":    100,
+					"currency": "PLN",
+					"quantity": 5.5,
+					"name":     "Product #0",
+				},
+			},
+			want: false,
+		},
+		{
+			name: "proper payload",
+			basketEntry: BasketEntry{
+				key: "test-id",
+				value: map[string]interface{}{
+					"price":    100,
+					"currency": "PLN",
+					"quantity": 1,
+					"name":     "Product #0",
+				},
+			},
+			want: true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			ok := isValidBasketEntry(test.basketEntry.key, test.basketEntry.value)
+			if ok != test.want {
+				t.Errorf("%s - got %t, want %t", test.name, ok, test.want)
+			}
+		})
+	}
+}

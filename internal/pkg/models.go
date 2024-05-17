@@ -88,10 +88,12 @@ type Order struct {
 	CreatedAt  time.Time      `json:"-"`
 	UpdatedAt  time.Time      `json:"-"`
 	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
-	TotalCost  int            `json:"totalCost"`
+	TotalCost  float32        `json:"totalCost"`
 	Currency   string         `gorm:"size:3" json:"currency"`
 	Country    string         `gorm:"size:2" json:"country"`
 	City       string         `json:"city"`
 	PostalCode string         `json:"postalCode"`
 	Address    string         `json:"address"`
+	Status     string         `json:"status"`
+	Basket     JSONB          `gorm:"type:jsonb" json:"basket"`
 }

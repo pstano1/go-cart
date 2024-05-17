@@ -70,3 +70,42 @@ func isValidDescription(key string, value interface{}) bool {
 
 	return false
 }
+
+func isValidBasketProductDescription(key string, value interface{}) bool {
+	regex := regexp.MustCompile(`^[A-Z]{3}$`)
+	switch val := value.(type) {
+	case int:
+		return key == "price" || key == "quantity"
+	case float32, float64:
+		return key == "price" || key == "quantity"
+	case string:
+		return key == "name" || (key == "currency" && regex.MatchString(val))
+	default:
+		return false
+	}
+}
+
+func isValidBasketEntry(key string, value interface{}) bool {
+	switch val := value.(type) {
+	case map[string]interface{}:
+		requiredKeys := map[string]bool{
+			"price":    true,
+			"currency": true,
+			"quantity": true,
+			"name":     true,
+		}
+		for k, v := range val {
+			if !isValidBasketProductDescription(k, v) {
+				return false
+			}
+		}
+		for k := range requiredKeys {
+			if _, found := val[k]; !found {
+				return false
+			}
+		}
+		return true
+	default:
+		return false
+	}
+}

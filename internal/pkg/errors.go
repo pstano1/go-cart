@@ -23,4 +23,8 @@ var (
 	ErrUpdatingCategory             = errors.New("could not update category")
 	ErrCouponNotFound               = errors.New("could not find coupon")
 	ErrUpdatingCoupon               = errors.New("could not update coupon")
+	ErrOrderNotFound                = errors.New("could not find order")
+	ErrUpdatingOrder                = errors.New("could not update order")
+	ErrCreatingOrder                = errors.New("error while creating order")
+	ErrInvalidBasketValue           = errors.New("invalid value provided for basket")
 )

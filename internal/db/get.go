@@ -155,3 +155,49 @@ func (d *DBController) GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error
 	}
 	return coupons, nil
 }
+
+func (d *DBController) GetOrders(filter *pkg.OrderFilter) ([]pkg.Order, error) {
+	orders := make([]pkg.Order, 0)
+	gormQuery := d.gormDB.Table("orders").Select(`
+		orders.id,
+		orders.customer_id,
+		orders.total_cost,
+		orders.currency,
+		orders.city,
+		orders.postal_code,
+		orders.address,
+		orders.country,
+		orders.basket,
+		orders.status
+	`)
+	if filter.Id != "" {
+		gormQuery = gormQuery.Where("orders.id = ?", filter.Id)
+	}
+	if filter.CustomerId != "" {
+		gormQuery = gormQuery.Where("orders.customer_id = ?", filter.CustomerId)
+	}
+	gormQuery = gormQuery.Where("orders.deleted_at is null")
+	rows, err := gormQuery.Rows()
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var order pkg.Order
+		if err = rows.Scan(
+			&order.Id,
+			&order.CustomerId,
+			&order.TotalCost,
+			&order.Currency,
+			&order.City,
+			&order.PostalCode,
+			&order.Address,
+			&order.Country,
+			&order.Basket,
+			&order.Status,
+		); err != nil {
+			return nil, err
+		}
+		orders = append(orders, order)
+	}
+	return orders, nil
+}

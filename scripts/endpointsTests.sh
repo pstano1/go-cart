@@ -257,3 +257,101 @@ statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
     "$URL/coupon/$couponId?customerId=$customerId")
 
 interpretStatus "$statusCode" "DELETE /coupon/{id}"
+
+# POST /order
+# Create an order
+payload=$(cat <<EOF
+{
+  "customerId": "$customerId",
+  "totalCost": 100.00,
+  "currency": "PLN",
+  "country": "PL",
+  "city": "Warszawa",
+  "postalCode": "00-902",
+  "address": "ul. Wiejska 4",
+  "basket": {
+    "test-id": {
+      "price":    50,
+      "currency": "PLN",
+      "quantity": 1,
+      "name":     "Product #0"
+    },
+    "test-id-1": {
+      "price":    50,
+      "currency": "PLN",
+      "quantity": 1,
+      "name":     "Product #1"
+    }
+  }
+}
+EOF
+)
+
+response=$(curl -s -w "\n%{http_code}" -X POST \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/order/")
+
+body=$(echo "$response" | sed '$d')
+orderId=$(echo "$body" | jq -r '.id')
+statusCode=$(echo "$response" | tail -n 1)
+
+interpretStatus "$statusCode" "POST /order"
+
+# GET /order
+# Get order(s)
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    "$URL/order/?customerId=$customerId")
+
+interpretStatus "$statusCode" "GET /order"
+
+# PUT /order
+# Update an order
+payload=$(cat <<EOF
+{
+  "id": "$orderId",
+  "customerId": "$customerId",
+  "totalCost": 100.00,
+  "currency": "PLN",
+  "country": "PL",
+  "city": "Warszawa",
+  "postalCode": "00-902",
+  "address": "ul. Wiejska 4",
+  "status": "paid",
+  "basket": {
+    "test-id": {
+      "price":    50,
+      "currency": "PLN",
+      "quantity": 1,
+      "name":     "Product #0"
+    },
+    "test-id-1": {
+      "price":    50,
+      "currency": "PLN",
+      "quantity": 1,
+      "name":     "Product #1"
+    }
+  }
+}
+EOF
+)
+
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/order/")
+
+interpretStatus "$statusCode" "PUT /order"
+
+# DELETE /order/{id}
+# Delete an order
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    "$URL/order/$orderId?customerId=$customerId")
+
+interpretStatus "$statusCode" "DELETE /order/{id}"

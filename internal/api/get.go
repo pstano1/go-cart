@@ -29,3 +29,7 @@ func (a *InstanceAPI) GetCategories(filter *pkg.CategoryFilter) ([]string, error
 func (a *InstanceAPI) GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error) {
 	return a.dbController.GetCoupons(filter)
 }
+
+func (a *InstanceAPI) GetOrders(filter *pkg.OrderFilter) ([]pkg.Order, error) {
+	return a.dbController.GetOrders(filter)
+}

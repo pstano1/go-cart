@@ -63,3 +63,27 @@ type CouponUpdate struct {
 	PromoCode string `json:"promoCode"`
 	Amount    int    `json:"amount"`
 }
+
+type OrderCreate struct {
+	CustomerSpecificModel
+	TotalCost  float32 `json:"totalCost"`
+	Currency   string  `gorm:"size:3" json:"currency"`
+	Country    string  `gorm:"size:2" json:"country"`
+	City       string  `json:"city"`
+	PostalCode string  `json:"postalCode"`
+	Address    string  `json:"address"`
+	Basket     JSONB   `json:"basket"`
+}
+
+type OrderUpdate struct {
+	CustomerSpecificModel
+	Id         string  `json:"id"`
+	TotalCost  float32 `json:"totalCost"`
+	Currency   string  `gorm:"size:3" json:"currency"`
+	Country    string  `gorm:"size:2" json:"country"`
+	City       string  `json:"city"`
+	PostalCode string  `json:"postalCode"`
+	Address    string  `json:"address"`
+	Status     string  `json:"status"`
+	Basket     JSONB   `json:"basket"`
+}

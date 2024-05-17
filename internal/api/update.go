@@ -102,3 +102,30 @@ func (a *InstanceAPI) UpdateCoupon(request *pkg.CouponUpdate) error {
 	}
 	return nil
 }
+
+func (a *InstanceAPI) UpdateOrder(request *pkg.OrderUpdate) error {
+	a.log.Debug("updating order info",
+		zap.String("id", request.Id),
+	)
+	orders, err := a.GetOrders(&pkg.OrderFilter{
+		Id: request.Id,
+	})
+	if err != nil {
+		a.log.Error("Could not retrieve order",
+			zap.Error(err),
+		)
+		return pkg.ErrOrderNotFound
+	}
+	order := orders[0]
+	err = copier.Copy(&order, request)
+	if err != nil {
+		a.log.Debug(err.Error())
+		return err
+	}
+	err = a.dbController.Update(order)
+	if err != nil {
+		a.log.Debug(err.Error())
+		return pkg.ErrUpdatingOrder
+	}
+	return nil
+}

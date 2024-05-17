@@ -139,3 +139,32 @@ func (a *InstanceAPI) CreateCoupon(request *pkg.CouponCreate) (*string, error) {
 	}
 	return &coupon.Id, nil
 }
+
+func (a *InstanceAPI) CreateOrder(request *pkg.OrderCreate) (*string, error) {
+	a.log.Debug("creating order",
+		zap.String("customer", request.CustomerId),
+	)
+	var order pkg.Order
+	err := copier.Copy(&order, request)
+	if err != nil {
+		a.log.Error("error while copying request",
+			zap.Error(err),
+		)
+		return nil, err
+	}
+	for key, value := range request.Basket {
+		if !isValidBasketEntry(key, value) {
+			return nil, pkg.ErrInvalidBasketValue
+		}
+	}
+	order.Id = uuid.New().String()
+	order.Status = "placed"
+	err = a.dbController.Create(&order)
+	if err != nil {
+		a.log.Error("error while creating order",
+			zap.Error(err),
+		)
+		return nil, pkg.ErrCreatingOrder
+	}
+	return &order.Id, nil
+}
