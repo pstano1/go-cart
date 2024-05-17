@@ -7,6 +7,7 @@ import (
 
 	"github.com/pstano1/go-cart/internal/pkg"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -31,6 +32,25 @@ func migrateDatabase(db *gorm.DB) {
 	if err != nil {
 		log.Fatalf("error occured while migrating database: %v", err)
 		return
+	}
+}
+
+func flushDatabase(db *gorm.DB) {
+	models := []interface{}{
+		&pkg.User{},
+		&pkg.Permission{},
+		&pkg.Product{},
+		&pkg.ProductCategory{},
+		&pkg.Order{},
+		&pkg.Coupon{},
+	}
+	for _, model := range models {
+		err := db.Migrator().DropTable(model)
+		if err != nil {
+			log.Fatal("error while dropping table",
+				zap.Error(err),
+			)
+		}
 	}
 }
 
@@ -73,6 +93,9 @@ func main() {
 			migrateDatabase(gormDB)
 		case "create-permissions":
 			createPermissions(gormDB)
+		case "flush":
+			flushDatabase(gormDB)
+			migrateDatabase(gormDB)
 		default:
 			log.Fatalf("invalid action %s. skipping...", action)
 		}
