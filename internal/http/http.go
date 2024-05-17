@@ -2,7 +2,9 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -47,6 +49,8 @@ func NewHTTPInstanceAPI(conf *HTTPConfig) *HTTPInstanceAPI {
 func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	r := router.New()
 	api := r.Group("/api")
+
+	api.GET("/error/{lang}", i.getError)
 
 	customers := api.Group("/customer")
 	customers.GET("/id/{tag}", i.getCustomerId)
@@ -227,5 +231,32 @@ func (i *HTTPInstanceAPI) getCustomerId(ctx *fasthttp.RequestCtx) {
 		return
 	}
 	ctx.SetBody(body)
+	ctx.SetStatusCode(fasthttp.StatusOK)
+}
+
+func (i *HTTPInstanceAPI) getError(ctx *fasthttp.RequestCtx) {
+	i.log.Debug("got request for retrieving error messages")
+	supportedLanguages := []string{"en", "pl"}
+	requestedLanguage := ctx.UserValue("lang").(string)
+	ok := false
+	for _, lang := range supportedLanguages {
+		if lang == strings.ToLower(requestedLanguage) {
+			ok = true
+			break
+		}
+	}
+	if !ok {
+		ctx.SetBodyString(pkg.ErrUnsupportedLang.Error())
+		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		return
+	}
+	filename := fmt.Sprintf("common/errors/%s.json", strings.ToLower(requestedLanguage))
+	errors, err := os.ReadFile(filename)
+	if err != nil {
+		ctx.SetBodyString(pkg.ErrUnsupportedLang.Error())
+		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		return
+	}
+	ctx.Response.SetBody(errors)
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }

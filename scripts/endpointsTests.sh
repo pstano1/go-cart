@@ -19,6 +19,11 @@ interpretStatus() {
     fi
 }
 
+# /error/{lang}
+# retrieves JSON containing translations of errors if the `lang` is supported
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X GET "$URL/error/en")
+interpretStatus "$statusCode" "/error/{lang}"
+
 # /customer/id/{tag}
 # gets customerId based on a provided tag
 customerId=$(curl -s -X GET "$URL/customer/id/${customerTag}" | jq -r '.id')

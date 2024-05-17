@@ -24,7 +24,7 @@
   - [x] coupons;
   - [] permissions;
   - [] tests;
-  - [] errors;
+  - [x] errors;
   - [] add comments;
   - [] images storage;
   - [] add price history;
