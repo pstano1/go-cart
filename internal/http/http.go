@@ -12,7 +12,9 @@ import (
 
 	"github.com/fasthttp/router"
 	"github.com/gbrlsnchs/jwt"
+	gojwt "github.com/golang-jwt/jwt"
 	"github.com/jinzhu/copier"
+	"github.com/mitchellh/mapstructure"
 	"github.com/pstano1/go-cart/internal/api"
 	"github.com/pstano1/go-cart/internal/pkg"
 	"github.com/valyala/fasthttp"
@@ -64,6 +66,7 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 
 	users := api.Group("/user")
 	users.GET("/", i.authMiddleware(i.sameCustomerOperation(i.getUser)))
+	users.GET("/permission", i.authMiddleware(i.getPermission))
 	users.POST("/", i.createUser)
 	// users.POST("/", i.authMiddleware(i.sameCustomerOperation(i.createUser)))
 	users.PUT("/", i.authMiddleware(i.updateUser))
@@ -89,7 +92,7 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 
 	orders := api.Group("/order")
 	orders.GET("/", i.authMiddleware(i.sameCustomerOperation(i.getOrder)))
-	orders.POST("/", i.authMiddleware(i.sameCustomerOperation(i.createOrder)))
+	orders.POST("/", i.createOrder)
 	orders.PUT("/", i.authMiddleware(i.sameCustomerOperation(i.updateOrder)))
 	orders.DELETE("/{id}", i.authMiddleware(i.sameCustomerOperation(i.deleteOrder)))
 
@@ -153,6 +156,7 @@ func (i *HTTPInstanceAPI) corsMiddleware(next fasthttp.RequestHandler) fasthttp.
 
 // sameCustomerOperation is middleware that handles request to see
 // if request made to route protected this way contains `customerId`
+// then check if user requesting has the same `customerId`
 // so the server will not respond with different customer's data
 func (i *HTTPInstanceAPI) sameCustomerOperation(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
@@ -193,6 +197,42 @@ func (i *HTTPInstanceAPI) sameCustomerOperation(next fasthttp.RequestHandler) fa
 	}
 }
 
+// validatePermissions checks if user possess' any od required permissions
+func validatePermissions(requiredPermissions []string, ctx *fasthttp.RequestCtx) bool {
+	ctx.SetUserValue("startTime", time.Now())
+	token := string(ctx.Request.Header.Peek("Authorization"))
+	token = strings.TrimPrefix(token, bearerToken+" ")
+	parsedToken, _, err := new(gojwt.Parser).ParseUnverified(token, gojwt.MapClaims{})
+	if err != nil {
+		return false
+	}
+	claims, ok := parsedToken.Claims.(gojwt.MapClaims)
+	if !ok {
+		return false
+	}
+	var jwtConfig api.JWTConfig
+	if err := mapstructure.Decode(claims, &jwtConfig); err != nil {
+		return false
+	}
+	content, ok := claims["user"].(map[string]interface{})
+	if !ok {
+		print("here3")
+		return false
+	}
+	userPermissions := content["permissions"].([]interface{})
+	permissionSet := make(map[string]bool)
+	for _, inter := range userPermissions {
+		permission, _ := inter.(string)
+		permissionSet[permission] = true
+	}
+	for _, permission := range requiredPermissions {
+		if permissionSet[permission] {
+			return true
+		}
+	}
+	return false
+}
+
 // validateBody unmarshals request body into `T` type struct
 // & validates it's integrity
 func validateBody[T any](ctx *fasthttp.RequestCtx) (*T, error) {
@@ -213,7 +253,7 @@ func validateBody[T any](ctx *fasthttp.RequestCtx) (*T, error) {
 // validateFilter populates filter of specified `T` type
 // & validates it's integrity
 func validateFilter[T pkg.Filter](ctx *fasthttp.RequestCtx) (T, error) {
-	ctx.SetUserValue("start_time", time.Now())
+	ctx.SetUserValue("startTime", time.Now())
 	var filter T
 	validate := validator.New()
 	f := filter.Populate(ctx)

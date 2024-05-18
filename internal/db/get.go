@@ -201,3 +201,21 @@ func (d *DBController) GetOrders(filter *pkg.OrderFilter) ([]pkg.Order, error) {
 	}
 	return orders, nil
 }
+
+func (d *DBController) GetPermissions() ([]string, error) {
+	var permissions []string
+	rows, err := d.gormDB.Model(pkg.Permission{}).Rows()
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var name string
+		if err = rows.Scan(
+			&name,
+		); err != nil {
+			return nil, err
+		}
+		permissions = append(permissions, name)
+	}
+	return permissions, nil
+}

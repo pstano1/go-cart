@@ -33,3 +33,7 @@ func (a *InstanceAPI) GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error)
 func (a *InstanceAPI) GetOrders(filter *pkg.OrderFilter) ([]pkg.Order, error) {
 	return a.dbController.GetOrders(filter)
 }
+
+func (a *InstanceAPI) GetPermissions() ([]string, error) {
+	return a.dbController.GetPermissions()
+}

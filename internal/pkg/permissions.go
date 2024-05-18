@@ -1,0 +1,23 @@
+package pkg
+
+const (
+	GetUser        = "get-user"
+	GetUserSelf    = "get-user-self"
+	CreateUser     = "create-user"
+	UpdateUser     = "update-user"
+	UpdateUserSelf = "update-user-self"
+	DeleteUser     = "delete-user"
+	DeleteUserSelf = "delete-user-self"
+	CreateProduct  = "create-product"
+	UpdateProduct  = "update-prdouct"
+	DeleteProduct  = "delete-Product"
+	CreateCategory = "create-category"
+	UpdateCategory = "update-category"
+	DeleteCategory = "delete-category"
+	CreateCoupon   = "create-coupon"
+	UpdateCoupon   = "update-coupon"
+	DeleteCoupon   = "delete-coupon"
+	GetOrders      = "get-orders"
+	UpdateOrder    = "update-order"
+	DeleteOrder    = "delete-order"
+)

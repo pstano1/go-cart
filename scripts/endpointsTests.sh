@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Adjust those variables before runnning the script
-username="admin"
+username="admin2"
 password="Admin1234mat@"
 URL="http://localhost:8000/api"
 
@@ -39,6 +39,7 @@ payload=$(cat <<EOF
 }
 EOF
 )
+
 sessionToken=$(curl -s -X POST \
     -H "Content-Type: application/json" \
     -d "$payload" \
@@ -50,6 +51,16 @@ statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
     "$URL/user/signin")
 
 interpretStatus "$statusCode" "/user/signin"
+
+# /user/permission
+# retrieves a list of possible permission
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/user/permission")
+
+interpretStatus "$statusCode" "/user/permission"
 
 # /user/refresh
 # refresh session token

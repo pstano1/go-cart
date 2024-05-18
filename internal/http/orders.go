@@ -13,6 +13,11 @@ import (
 // (or lack of) and returns slice of pkg.Order to user
 func (i *HTTPInstanceAPI) getOrder(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for retrieving orders")
+	if ok := validatePermissions([]string{pkg.GetOrders}, ctx); !ok {
+		ctx.SetBodyString(pkg.ErrUserForbidden.Error())
+		ctx.SetStatusCode(fasthttp.StatusForbidden)
+		return
+	}
 	filter, err := validateFilter[pkg.OrderFilter](ctx)
 	if err != nil {
 		ctx.SetBodyString(err.Error())
@@ -66,6 +71,11 @@ func (i *HTTPInstanceAPI) createOrder(ctx *fasthttp.RequestCtx) {
 // updateOrder handles order update based on request's body
 func (i *HTTPInstanceAPI) updateOrder(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for updating order")
+	if ok := validatePermissions([]string{pkg.UpdateOrder}, ctx); !ok {
+		ctx.SetBodyString(pkg.ErrUserForbidden.Error())
+		ctx.SetStatusCode(fasthttp.StatusForbidden)
+		return
+	}
 	request, err := validateBody[pkg.OrderUpdate](ctx)
 	if err != nil {
 		ctx.SetBodyString(err.Error())
@@ -84,6 +94,11 @@ func (i *HTTPInstanceAPI) updateOrder(ctx *fasthttp.RequestCtx) {
 // deleteOrder deletes order with id specified in route
 func (i *HTTPInstanceAPI) deleteOrder(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for deleting order")
+	if ok := validatePermissions([]string{pkg.DeleteOrder}, ctx); !ok {
+		ctx.SetBodyString(pkg.ErrUserForbidden.Error())
+		ctx.SetStatusCode(fasthttp.StatusForbidden)
+		return
+	}
 	orderId := ctx.UserValue("id").(string)
 	if orderId == "" {
 		ctx.SetBodyString(pkg.ErrUnableToReadPayload.Error())

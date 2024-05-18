@@ -34,6 +34,30 @@ func (i *HTTPInstanceAPI) getUser(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// getPermission provides user with list of possible permissions
+func (i *HTTPInstanceAPI) getPermission(ctx *fasthttp.RequestCtx) {
+	i.log.Debug("got request for permission retrieval")
+	if ok := validatePermissions([]string{pkg.CreateUser}, ctx); !ok {
+		ctx.SetBodyString(pkg.ErrUserForbidden.Error())
+		ctx.SetStatusCode(fasthttp.StatusForbidden)
+		return
+	}
+	permissions, err := i.api.GetPermissions()
+	if err != nil {
+		ctx.SetBodyString(err.Error())
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return
+	}
+	response, err := json.Marshal(permissions)
+	if err != nil {
+		ctx.SetBodyString(err.Error())
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return
+	}
+	ctx.SetBody(response)
+	ctx.SetStatusCode(fasthttp.StatusOK)
+}
+
 // createUser handles user creation based on request's body
 func (i *HTTPInstanceAPI) createUser(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for user creation")

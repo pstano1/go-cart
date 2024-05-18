@@ -22,7 +22,7 @@
 - backend:
   - [x] orders;
   - [x] coupons;
-  - [] permissions;
+  - [x] permissions;
   - [] tests;
   - [x] errors;
   - [] add goDoc comments;

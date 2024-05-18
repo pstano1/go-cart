@@ -39,6 +39,11 @@ func (i *HTTPInstanceAPI) getCoupon(ctx *fasthttp.RequestCtx) {
 // & returns object of type pkg.ObjectCreateResponse
 func (i *HTTPInstanceAPI) createCoupon(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for creating coupon")
+	if ok := validatePermissions([]string{pkg.CreateCoupon}, ctx); !ok {
+		ctx.SetBodyString(pkg.ErrUserForbidden.Error())
+		ctx.SetStatusCode(fasthttp.StatusForbidden)
+		return
+	}
 	request, err := validateBody[pkg.CouponCreate](ctx)
 	if err != nil {
 		ctx.SetBodyString(err.Error())
@@ -66,6 +71,11 @@ func (i *HTTPInstanceAPI) createCoupon(ctx *fasthttp.RequestCtx) {
 // updateCoupon handles coupon update based on request's body
 func (i *HTTPInstanceAPI) updateCoupon(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for updating coupon")
+	if ok := validatePermissions([]string{pkg.UpdateCoupon}, ctx); !ok {
+		ctx.SetBodyString(pkg.ErrUserForbidden.Error())
+		ctx.SetStatusCode(fasthttp.StatusForbidden)
+		return
+	}
 	request, err := validateBody[pkg.CouponUpdate](ctx)
 	if err != nil {
 		ctx.SetBodyString(err.Error())
@@ -84,6 +94,11 @@ func (i *HTTPInstanceAPI) updateCoupon(ctx *fasthttp.RequestCtx) {
 // deleteCoupon deletes coupon with id specified in route
 func (i *HTTPInstanceAPI) deleteCoupon(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for deleting coupon")
+	if ok := validatePermissions([]string{pkg.DeleteCoupon}, ctx); !ok {
+		ctx.SetBodyString(pkg.ErrUserForbidden.Error())
+		ctx.SetStatusCode(fasthttp.StatusForbidden)
+		return
+	}
 	couponId := ctx.UserValue("id").(string)
 	if couponId == "" {
 		ctx.SetBodyString(pkg.ErrUnableToReadPayload.Error())

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
@@ -55,7 +57,61 @@ func flushDatabase(db *gorm.DB) {
 }
 
 func createPermissions(db *gorm.DB) {
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.GetUser})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.GetUserSelf})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.CreateUser})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.UpdateUser})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.UpdateUserSelf})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.DeleteUser})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.DeleteUserSelf})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.CreateProduct})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.UpdateProduct})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.DeleteProduct})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.CreateCategory})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.UpdateCategory})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.DeleteCategory})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.CreateCoupon})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.UpdateCoupon})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.DeleteCoupon})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.GetOrders})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.UpdateOrder})
+	db.FirstOrCreate(&pkg.Permission{Name: pkg.DeleteOrder})
+}
 
+func createServiceAccount(db *gorm.DB) {
+	var permissions []string
+	rows, err := db.Model(pkg.Permission{}).Rows()
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		var name string
+		if err = rows.Scan(
+			&name,
+		); err != nil {
+			return
+		}
+		permissions = append(permissions, name)
+	}
+
+	randomBytes := make([]byte, 32)
+	_, err = rand.Read(randomBytes)
+	if err != nil {
+
+		return
+	}
+	password := base64.URLEncoding.EncodeToString(randomBytes)
+
+	serviceAccount := &pkg.UserCreate{
+		Username:      "service-account",
+		Password:      password,
+		PasswordCheck: password,
+		Email:         "",
+		Permissions:   permissions,
+		IsActive:      true,
+	}
+	println("Save the printed password since it can't be accessed later")
+	fmt.Printf("%s's password: %s\n", serviceAccount.Username, password)
 }
 
 func main() {
@@ -96,6 +152,9 @@ func main() {
 		case "flush":
 			flushDatabase(gormDB)
 			migrateDatabase(gormDB)
+		case "create-service-account":
+			println("not implemented yet")
+			createServiceAccount(gormDB)
 		default:
 			log.Fatalf("invalid action %s. skipping...", action)
 		}
