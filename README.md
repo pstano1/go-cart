@@ -29,6 +29,7 @@
   - [] images storage;
   - [] add price history;
   - [] payment processing;
+  - [] allow for localized product names;
 - other:
   - [] swagger;
   - [] makefile;

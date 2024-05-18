@@ -6,3 +6,5 @@ frontend/bin/output.css
 .DS_STORE
 
 app.env
+
+*.br

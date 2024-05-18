@@ -101,7 +101,15 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 
 // Run starts the HTTP server
 func (i *HTTPInstanceAPI) Run() {
+	swaggerUIHandler := func(ctx *fasthttp.RequestCtx) {
+		if string(ctx.Path()) == "/swagger/" || string(ctx.Path()) == "/swagger/index.html" {
+			ctx.SendFile("./swagger/index.html")
+			return
+		}
+		ctx.SendFile("./" + string(ctx.Path()))
+	}
 	r := i.GetRouter()
+	r.GET("/swagger/{any}", swaggerUIHandler)
 	i.log.Info("Starting server at port",
 		zap.String("port", i.bind),
 	)

@@ -1,0 +1,36 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.10/swagger-ui.css" integrity="sha512-MvYROlKG3cDBPskMQgPmkNgZh85LIf68y7SZ34TIppaIHQz1M/3S/yYqzIfufdKDJjzB9Qu1BV63SZjimJkPvw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+  </head>
+
+  <body>
+    <div id="swagger-ui"></div>
+     <!-- Load Swagger UI configuration -->
+     <script>
+      window.onload = function() {
+        const uiConfig = {}
+
+        const ui = SwaggerUIBundle({
+          url: "./swagger.yaml",
+          dom_id: "#swagger-ui",
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ],
+          layout: "BaseLayout",
+          ...uiConfig
+        })
+      }
+    </script>
+
+    <!-- Load Swagger UI scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.10/swagger-ui-bundle.js" integrity="sha512-IprfMhO9WX4ArBj2cPo+rtMfFml6soijBYs3YNAFuoiqICXpT1uN7MJSe0sVD72YRECYJz0hslko7ohM9twjkg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.10/swagger-ui-standalone-preset.js" integrity="sha512-g0tZCuKR26TErP5Q9TaXaWWc8Qfd1RRjpz9lFJp7fdsCPLaSncutf7D4pGbI6Qi7U7U5RgOUM54Bu7tXW0NKGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  </body>
+</html>

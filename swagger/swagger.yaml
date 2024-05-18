@@ -1,0 +1,696 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "go-cart API"
+  description: ""
+  contact:
+    name: "Paweł Stano"
+    email: "p.stano@outlook.com"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+  components:
+    securitySchemes:
+      bearerAuth:
+        type: "http"
+        scheme: "bearer"
+        bearerFormat: "JWT"
+host: ""
+basePath: "/api"
+schemes:
+  - "http"
+  - "https"
+tags:
+  - name: "other"
+    description: "operations that aren't grouped anywhere else"
+  - name: "customers"
+    description: "operations grouped under /customer"
+  - name: "users"
+    description: "operations grouped under /users"
+  - name: "products"
+    description: "operations grouped under /products"
+  - name: "coupons"
+    description: "operations grouped under /coupon"
+  - name: "orders"
+    description: "operations grouped under /orders"
+paths:
+  /error/{lang}:
+    get:
+      tags:
+        - "other"
+      summary: "Fetches errors"
+      description: "Returns JSON containing error messages in requested language for keys returned by other endpoints.\n Supported languages: EN, PL"
+      parameters:
+        - name: "lang"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+  /customer/id/{tag}:
+    get:
+      tags:
+        - "customers"
+      summary: "Gets customerId"
+      description: "Exchanges the provided tag into customerId"
+      parameters:
+        - name: "tag"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+  /user/permission:
+    get:
+      tags:
+        - "users"
+      summary: "Gets permissions"
+      description: "Returns a slice of possible permissions"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+  /user:
+    get:
+      tags:
+        - "users"
+      summary: "Gets user(s)"
+      description: "Returns a slice of users based on query params"
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: "id"
+          in: "query"
+          required: false
+          type: "string"
+        - name: "username"
+          in: "query"
+          required: false
+          type: "string"
+        - name: "customerId"
+          in: "query"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+    post:
+      tags:
+        - "users"
+      summary: "Registers an user"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+              password:
+                type: "string"
+              passwordCheck:
+                type: "string"
+              email:
+                type: "string"
+              permissions:
+                type: "array"
+                items:
+                  type: "string"
+              customerId:
+                type: "string"
+      responses:
+        201:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+    put:
+      tags:
+        - "users"
+      summary: "Updates user's info"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /user/{id}:
+    delete:
+      tags:
+        - "users"
+      summary: "Deletes user with specified id"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+        - in: "query"
+          name: "customerId"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /user/signin:
+    post:
+      tags:
+        - "users"
+      summary: "Signs user in"
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+              password:
+                type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+              permissions:
+                type: "array"
+                items:
+                  type: "string"
+              sessionToken:
+                type: "string"
+  /user/refresh:
+    post:
+      tags:
+        - "users"
+      summary: "Refreshes session token"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+              permissions:
+                type: "array"
+                items:
+                  type: "string"
+              sessionToken:
+                type: "string"
+  /product:
+    get:
+      tags:
+        - "products"
+      summary: "Gets product(s)"
+      description: "Returns a slice of products based on query params"
+      parameters:
+        - name: "id"
+          in: "query"
+          required: false
+          type: "string"
+        - name: "categories"
+          in: "query"
+          required: false
+          type: "string"
+          description: "takes a list of comma separated categories"
+        - name: "customerId"
+          in: "query"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+    post:
+      tags:
+        - "products"
+      summary: "Creates a new product"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              descriptions:
+                type: "object"
+                additionalProperties:
+                  type: "string"
+              categories:
+                type: "array"
+                items:
+                  type: "string"
+              prices:
+                type: "object"
+                additionalProperties:
+                  type: "number"
+                  multipleOf: 0.01
+              customerId:
+                type: "string"
+      responses:
+        201:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+    put:
+      tags:
+        - "products"
+      summary: "Updates product's info"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Product"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /product/{id}:
+    delete:
+      tags:
+        - "products"
+      summary: "Deletes product with specified id"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+        - in: "query"
+          name: "customerId"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /product/category:
+    get:
+      tags:
+        - "products"
+      summary: "Gets product categories"
+      description: "Returns a slice of categories based on query params"
+      parameters:
+        - name: "id"
+          in: "query"
+          required: false
+          type: "string"
+        - name: "customerId"
+          in: "query"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+    post:
+      tags:
+        - "products"
+      summary: "Creates a new product category"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              customerId:
+                  type: "string"
+      responses:
+        201:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+    put:
+      tags:
+        - "products"
+      summary: "Updates product category's info"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              customerId:
+                  type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /product/category/{id}:
+    delete:
+      tags:
+        - "products"
+      summary: "Deletes product category with specified id"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+        - in: "query"
+          name: "customerId"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /coupon:
+    get:
+      tags:
+        - "coupons"
+      summary: "Gets coupon(s)"
+      description: "Returns a slice of coupon based on query params"
+      parameters:
+        - name: "id"
+          in: "query"
+          required: false
+          type: "string"
+        - name: "customerId"
+          in: "query"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Coupon"
+    post:
+      tags:
+        - "coupons"
+      summary: "Creates a new coupon"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              promoCode:
+                type: "string"
+              amount:
+                  type: "number"
+              customerId:
+                type: "string"
+      responses:
+        201:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+    put:
+      tags:
+        - "coupons"
+      summary: "Updates coupon's info"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Coupon"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /coupon/{id}:
+    delete:
+      tags:
+        - "coupons"
+      summary: "Deletes a coupon with specified id"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+        - in: "query"
+          name: "customerId"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /order:
+    get:
+      tags:
+        - "orders"
+      summary: "Gets order(s)"
+      security:
+        -bearerAuth: []
+      description: "Returns a slice of orders based on query params"
+      parameters:
+        - name: "id"
+          in: "query"
+          required: false
+          type: "string"
+        - name: "customerId"
+          in: "query"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Order"
+    post:
+      tags:
+        - "orders"
+      summary: "Creates a new order"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              customerId:
+                type: "string"
+              totalCost:
+                type: "number"
+                format: "double"
+              currency:
+                type: "string"
+              country:
+                type: "string"
+              city:
+                type: "string"
+              postalCode:
+                type: "string"
+              address:
+                type: "string"
+              basket:
+                type: "object"
+                additionalProperties:
+                  type: "object"
+                  properties:
+                    price:
+                      type: "number"
+                      format: "double"
+                    currency:
+                      type: "string"
+                    quantity:
+                      type: "integer"
+                    name:
+                      type: "string"
+      responses:
+          201:
+            description: "Success"
+            schema:
+              type: "object"
+              properties:
+                id:
+                  type: "string"
+    put:
+      tags:
+        - "orders"
+      summary: "Updates order's info"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/Order"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+  /order/{id}:
+    delete:
+      tags:
+        - "orders"
+      summary: "Deletes an order with specified id"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+        - in: "query"
+          name: "customerId"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      username:
+        type: "string"
+      email:
+        type: "string"
+      permissions:
+        type: "array"
+        items:
+          type: "string"
+      isActive:
+        type: "boolean"
+      customerId:
+        type: "string"
+  Product:
+    type: "object"
+    properties:
+      id: 
+        type: "string"
+      name:
+        type: "string"
+      categories:
+        type: "array"
+        items:
+          type: "string"
+      descriptions:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      prices:
+        type: "object"
+        additionalProperties:
+          type: "number"
+          multipleOf: 0.01
+      customerId:
+        type: "string"
+  Coupon:
+    type: "object"
+    properties:
+      id: 
+        type: "string"
+      promoCode:
+        type: "string"
+      amount:
+        type: "number"
+      categories:
+        type: "array"
+        items:
+          type: "string"
+      isActive:
+        type: "string"
+  Order:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      totalCost:
+        type: "number"
+        multipleOf: 0.01
+      currency:
+        type: "string"
+      country:
+        type: "string"
+      city:
+        type: "string"
+      postalCode:
+        type: "string"
+      address:
+        type: "string"
+      status:
+        type: "string"
+      basket:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          schema:
+            name:
+              type: "string"
+            price:
+              type: "number"
+              multiplyOf: 0.01
+            currency:
+              type: "string"
+            quantity:
+              type: "number"
