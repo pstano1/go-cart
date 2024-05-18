@@ -25,9 +25,10 @@
   - [] permissions;
   - [] tests;
   - [x] errors;
-  - [] add comments;
+  - [] add goDoc comments;
   - [] images storage;
   - [] add price history;
+  - [] payment processing;
 - other:
   - [] swagger;
   - [] makefile;

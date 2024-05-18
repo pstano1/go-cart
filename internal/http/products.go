@@ -7,6 +7,8 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+// getProduct retrieves product(s) based on provided query params
+// (or lack of) and returns slice of pkg.Product to user
 func (i *HTTPInstanceAPI) getProduct(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for retrieving products")
 	filter, err := validateFilter[pkg.ProductFilter](ctx)
@@ -31,6 +33,8 @@ func (i *HTTPInstanceAPI) getProduct(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// createProduct handles product creation based on request's body
+// & returns object of type pkg.ObjectCreateResponse
 func (i *HTTPInstanceAPI) createProduct(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for product creation")
 	request, err := validateBody[pkg.ProductCreate](ctx)
@@ -57,6 +61,7 @@ func (i *HTTPInstanceAPI) createProduct(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 }
 
+// updateProduct handles product update based on request's body
 func (i *HTTPInstanceAPI) updateProduct(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for product update")
 	request, err := validateBody[pkg.ProductUpdate](ctx)
@@ -74,6 +79,7 @@ func (i *HTTPInstanceAPI) updateProduct(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// deleteProduct deletes product with id specified in route
 func (i *HTTPInstanceAPI) deleteProduct(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for product deletion")
 	productId := ctx.UserValue("id").(string)
@@ -91,6 +97,8 @@ func (i *HTTPInstanceAPI) deleteProduct(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// getCategory retrieves coupon(s) based on provided query params
+// (or lack of) and returns slice of pkg.ProductCategory to user
 func (i *HTTPInstanceAPI) getCategory(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for retrieving categories")
 	filter, err := validateFilter[pkg.CategoryFilter](ctx)
@@ -115,6 +123,8 @@ func (i *HTTPInstanceAPI) getCategory(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// createCreate handles category creation based on request's body
+// & returns object of type pkg.ObjectCreateResponse
 func (i *HTTPInstanceAPI) createCategory(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for creating category")
 	request, err := validateBody[pkg.CategoryCreate](ctx)
@@ -141,6 +151,7 @@ func (i *HTTPInstanceAPI) createCategory(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 }
 
+// updateCategory handles category update based on request's body
 func (i *HTTPInstanceAPI) updateCategory(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for category update")
 	request, err := validateBody[pkg.CategoryUpdate](ctx)
@@ -158,6 +169,7 @@ func (i *HTTPInstanceAPI) updateCategory(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// deleteCategory deletes category with id specified in route
 func (i *HTTPInstanceAPI) deleteCategory(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for category deletion")
 	categoryId := ctx.UserValue("id").(string)

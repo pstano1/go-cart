@@ -1,3 +1,5 @@
+// Package http provides server implementation for the application
+// This file includes /coupon routes handlers
 package http
 
 import (
@@ -7,6 +9,8 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+// getCoupon retrieves coupon(s) based on provided query params
+// (or lack of) and returns slice of pkg.Coupon to user
 func (i *HTTPInstanceAPI) getCoupon(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for retrieving coupons")
 	filter, err := validateFilter[pkg.CouponFilter](ctx)
@@ -31,6 +35,8 @@ func (i *HTTPInstanceAPI) getCoupon(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// createCoupon handles coupon creation based on request's body
+// & returns object of type pkg.ObjectCreateResponse
 func (i *HTTPInstanceAPI) createCoupon(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for creating coupon")
 	request, err := validateBody[pkg.CouponCreate](ctx)
@@ -57,6 +63,7 @@ func (i *HTTPInstanceAPI) createCoupon(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 }
 
+// updateCoupon handles coupon update based on request's body
 func (i *HTTPInstanceAPI) updateCoupon(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for updating coupon")
 	request, err := validateBody[pkg.CouponUpdate](ctx)
@@ -74,6 +81,7 @@ func (i *HTTPInstanceAPI) updateCoupon(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// deleteCoupon deletes coupon with id specified in route
 func (i *HTTPInstanceAPI) deleteCoupon(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for deleting coupon")
 	couponId := ctx.UserValue("id").(string)

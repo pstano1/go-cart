@@ -1,3 +1,5 @@
+// Package http provides server implementation for the application
+// It includes route definitions, middlewares & handlers for various API endpoints
 package http
 
 import (
@@ -18,6 +20,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
+// Constants used through the `http` package
 const (
 	bearerToken          = "Bearer"
 	corsAllowHeaders     = "Content-Type,Authorization"
@@ -26,18 +29,21 @@ const (
 	corsAllowCredentials = "true"
 )
 
+// HTTPInstanceAPI represents the HTTP server instance and its configuration
 type HTTPInstanceAPI struct {
 	bind string
 	log  *zap.Logger
 	api  *api.InstanceAPI
 }
 
+// HTTPConfig holds the configuration for initializing an HTTPInstanceAPI
 type HTTPConfig struct {
 	Logger   *zap.Logger
 	BindPath string
 	API      *api.InstanceAPI
 }
 
+// NewHTTPInstanceAPI creates a new instance of HTTPInstanceAPI with the given configuration
 func NewHTTPInstanceAPI(conf *HTTPConfig) *HTTPInstanceAPI {
 	return &HTTPInstanceAPI{
 		bind: conf.BindPath,
@@ -46,6 +52,7 @@ func NewHTTPInstanceAPI(conf *HTTPConfig) *HTTPInstanceAPI {
 	}
 }
 
+// GetRouter sets up the router and defines all the API routes
 func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	r := router.New()
 	api := r.Group("/api")
@@ -89,6 +96,7 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	return r
 }
 
+// Run starts the HTTP server
 func (i *HTTPInstanceAPI) Run() {
 	r := i.GetRouter()
 	i.log.Info("Starting server at port",
@@ -97,6 +105,7 @@ func (i *HTTPInstanceAPI) Run() {
 	log.Fatal(fasthttp.ListenAndServe(i.bind, i.corsMiddleware(r.Handler)))
 }
 
+// authMiddleware checks if user is authenticated when accessing protected routes
 func (i *HTTPInstanceAPI) authMiddleware(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		path := ctx.Path()
@@ -125,6 +134,7 @@ func (i *HTTPInstanceAPI) authMiddleware(next fasthttp.RequestHandler) fasthttp.
 	}
 }
 
+// corsMiddleware handles preflights and allows for cross domain operations
 func (i *HTTPInstanceAPI) corsMiddleware(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Access-Control-Allow-Origin", corsAllowOrigin)
@@ -141,6 +151,9 @@ func (i *HTTPInstanceAPI) corsMiddleware(next fasthttp.RequestHandler) fasthttp.
 	}
 }
 
+// sameCustomerOperation is middleware that handles request to see
+// if request made to route protected this way contains `customerId`
+// so the server will not respond with different customer's data
 func (i *HTTPInstanceAPI) sameCustomerOperation(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		var customerId []byte
@@ -180,6 +193,8 @@ func (i *HTTPInstanceAPI) sameCustomerOperation(next fasthttp.RequestHandler) fa
 	}
 }
 
+// validateBody unmarshals request body into `T` type struct
+// & validates it's integrity
 func validateBody[T any](ctx *fasthttp.RequestCtx) (*T, error) {
 	ctx.SetUserValue("startTime", time.Now())
 	var postBody T
@@ -195,6 +210,8 @@ func validateBody[T any](ctx *fasthttp.RequestCtx) (*T, error) {
 	return &postBody, nil
 }
 
+// validateFilter populates filter of specified `T` type
+// & validates it's integrity
 func validateFilter[T pkg.Filter](ctx *fasthttp.RequestCtx) (T, error) {
 	ctx.SetUserValue("start_time", time.Now())
 	var filter T
@@ -210,6 +227,7 @@ func validateFilter[T pkg.Filter](ctx *fasthttp.RequestCtx) (T, error) {
 	return filter, nil
 }
 
+// getCustomerId handles a translation of tag into customerId
 func (i *HTTPInstanceAPI) getCustomerId(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for getting customer id")
 	tag := ctx.UserValue("tag").(string)
@@ -234,6 +252,8 @@ func (i *HTTPInstanceAPI) getCustomerId(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// getError parses the error dict file of specified language
+// & returns it to user as response body
 func (i *HTTPInstanceAPI) getError(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for retrieving error messages")
 	supportedLanguages := []string{"en", "pl"}

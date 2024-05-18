@@ -8,6 +8,8 @@ import (
 	"go.uber.org/zap"
 )
 
+// getUser retrieves user(s) based on provided query params
+// (or lack of) and returns slice of pkg.User to user
 func (i *HTTPInstanceAPI) getUser(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for retrieving users")
 	filter, err := validateFilter[pkg.UserFilter](ctx)
@@ -32,6 +34,7 @@ func (i *HTTPInstanceAPI) getUser(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// createUser handles user creation based on request's body
 func (i *HTTPInstanceAPI) createUser(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for user creation")
 	request, err := validateBody[pkg.UserCreate](ctx)
@@ -54,6 +57,7 @@ func (i *HTTPInstanceAPI) createUser(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 }
 
+// updateUser handles user update based on request's body
 func (i *HTTPInstanceAPI) updateUser(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for user update")
 	request, err := validateBody[pkg.UserUpdate](ctx)
@@ -71,6 +75,7 @@ func (i *HTTPInstanceAPI) updateUser(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// deleteUser deletes user with id specified in route
 func (i *HTTPInstanceAPI) deleteUser(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for user deletion")
 	userId := ctx.UserValue("id").(string)
@@ -88,6 +93,7 @@ func (i *HTTPInstanceAPI) deleteUser(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// signUserIn attemps to sign user in based on provided credentials
 func (i *HTTPInstanceAPI) signUserIn(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request to sign user in")
 	request, err := validateBody[pkg.Credentials](ctx)
@@ -112,6 +118,7 @@ func (i *HTTPInstanceAPI) signUserIn(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
+// refreshToken allows for prolonging user session
 func (i *HTTPInstanceAPI) refreshToken(ctx *fasthttp.RequestCtx) {
 	i.log.Debug("got request for access token refresh")
 	user, err := i.api.GetUserFromRequest(ctx)
