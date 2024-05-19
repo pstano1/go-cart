@@ -30,6 +30,7 @@
   - [] add price history;
   - [] payment processing;
   - [] allow for localized product names;
+  - [] BUG: server crashes when user doesn't have any permission;
 - other:
   - [] swagger;
   - [] makefile;
