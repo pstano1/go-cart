@@ -18,6 +18,7 @@ type UserCreate struct {
 }
 
 type UserUpdate struct {
+	CustomerSpecificModel
 	Id          string   `json:"id"`
 	Email       string   `json:"email"`
 	Permissions []string `json:"permissions"`

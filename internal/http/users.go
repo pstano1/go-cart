@@ -72,12 +72,21 @@ func (i *HTTPInstanceAPI) createUser(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-	if _, err := i.api.CreateUser(request); err != nil {
+	userId, err := i.api.CreateUser(request)
+	if err != nil {
 		ctx.SetBodyString(err.Error())
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		return
 	}
-	ctx.SetBodyString("successfully created user")
+	response, err := json.Marshal(&pkg.ObjectCreateResponse{
+		Id: *userId,
+	})
+	if err != nil {
+		ctx.SetBodyString(err.Error())
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return
+	}
+	ctx.SetBody(response)
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 }
 

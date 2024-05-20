@@ -69,8 +69,8 @@ func (i *HTTPInstanceAPI) GetRouter() *router.Router {
 	users.GET("/permission", i.authMiddleware(i.getPermission))
 	users.POST("/", i.createUser)
 	// users.POST("/", i.authMiddleware(i.sameCustomerOperation(i.createUser)))
-	users.PUT("/", i.authMiddleware(i.updateUser))
-	users.DELETE("/{id}", i.authMiddleware(i.deleteUser))
+	users.PUT("/", i.authMiddleware(i.sameCustomerOperation(i.updateUser)))
+	users.DELETE("/{id}", i.authMiddleware(i.sameCustomerOperation(i.deleteUser)))
 	users.POST("/signin", i.signUserIn)
 	users.POST("/refresh", i.refreshToken)
 

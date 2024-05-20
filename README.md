@@ -40,7 +40,7 @@
 - other:
   - [x] swagger;
   - [] makefile;
-  - [] .sh script;
+  - [x] .sh script;
   - [] README.md;
 
 ### Running locally

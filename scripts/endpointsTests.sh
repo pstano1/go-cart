@@ -57,7 +57,6 @@ interpretStatus "$statusCode" "/user/signin"
 statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $sessionToken" \
-    -d "$payload" \
     "$URL/user/permission")
 
 interpretStatus "$statusCode" "/user/permission"
@@ -70,6 +69,75 @@ statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
     "$URL/user/refresh")
 
 interpretStatus "$statusCode" "/user/refresh"
+
+# GET /user
+# Get users
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    "$URL/user/?customerId=$customerId")
+
+interpretStatus "$statusCode" "GET /user/"
+
+# POST /user
+# Creates an user account
+payload=$(cat <<EOF
+{
+  "username": "$(openssl rand -hex 8)",
+  "customerId": "$customerId",
+  "password": "Test1234@",
+  "passwordCheck": "Test1234@",
+  "email": "joedoe@example.com",
+  "permissions": [],
+  "isActive": true
+}
+EOF
+)
+
+response=$(curl -s -w "\n%{http_code}" -X POST \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/user/")
+
+body=$(echo "$response" | sed '$d')
+userId=$(echo "$body" | jq -r '.id')
+statusCode=$(echo "$response" | tail -n 1)
+
+interpretStatus "$statusCode" "POST /user/"
+
+# PUT /user/
+# Updates teh user account
+payload=$(cat <<EOF
+{
+  "id": "$userId",
+  "email": "joe.doe@example.com",
+  "permissions": [],
+  "customerId": "$customerId"
+}
+EOF
+)
+
+response=$(curl -s -w "\n%{http_code}" -X PUT \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    -d "$payload" \
+    "$URL/user/")
+
+statusCode=$(echo "$response" | tail -n 1)
+
+interpretStatus "$statusCode" "PUT /user/"
+
+# DELETE /user/{id}
+# Delete the user
+response=$(curl -s -w "\n%{http_code}" -X DELETE \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    "$URL/user/$userId?customerId=$customerId")
+
+statusCode=$(echo "$response" | tail -n 1)
+
+interpretStatus "$statusCode" "DELETE /user/"
 
 # POST /product/category
 # Create a product category
