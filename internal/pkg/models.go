@@ -17,6 +17,10 @@ func (j JSONB) Value() (driver.Value, error) {
 }
 
 func (j *JSONB) Scan(value interface{}) error {
+	if value == nil {
+		*j = nil
+		return nil
+	}
 	data, ok := value.([]byte)
 	if !ok {
 		return errors.New("type assertion to []byte failed")
@@ -55,10 +59,11 @@ type Product struct {
 	CreatedAt    time.Time      `json:"-"`
 	UpdatedAt    time.Time      `json:"-"`
 	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
-	Name         string         `json:"name"`
+	Names        JSONB          `gorm:"type:jsonb" json:"names"`
 	Descriptions JSONB          `gorm:"type:jsonb" json:"descriptions"`
 	Categories   pq.StringArray `gorm:"type:text[]" json:"categories"`
 	Prices       JSONB          `gorm:"type:jsonb" json:"prices"`
+	PriceHistory JSONB          `gotm:"type:jsonb" json:"priceHistory"`
 }
 
 type ProductCategory struct {
@@ -77,6 +82,7 @@ type Coupon struct {
 	UpdatedAt  time.Time      `json:"-"`
 	PromoCode  string         `json:"promoCode"`
 	Amount     int            `json:"amount"`
+	Unit       string         `json:"unit"`
 	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
 	Categories pq.StringArray `gorm:"type:text[]" json:"categories"`
 	IsActive   bool           `json:"isActive"`
@@ -96,4 +102,5 @@ type Order struct {
 	Address    string         `json:"address"`
 	Status     string         `json:"status"`
 	Basket     JSONB          `gorm:"type:jsonb" json:"basket"`
+	TaxId      string         `json:"taxId"`
 }

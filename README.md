@@ -27,14 +27,14 @@
   - [x] errors;
   - [] add goDoc comments;
   - [] images storage;
-  - [] add price history;
+  - [x] add price history;
   - [] payment processing;
-  - [] localized product names;
+  - [x] localized product names;
   - [x] BUG: server crashes when user doesn't have any permission;
   - [] scrape exchange rates in 24h interval;
   - [] proccessing of coupons to orders;
-  - [] add TAXID to orders;
-  - [] add unit (percentage/currency) to coupon;
+  - [x] add TAXID to orders;
+  - [x] add unit (percentage/currency) to coupon;
   - [] invoice/receipt generation;
   - [] mail sending;
 - other:
@@ -42,6 +42,7 @@
   - [] makefile;
   - [x] .sh script;
   - [] README.md;
+  - [ ] dockerfile;
 
 ### Running locally
 

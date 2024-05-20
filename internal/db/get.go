@@ -52,10 +52,11 @@ func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, er
 	gormQuery := d.gormDB.Table("products").Select(`
 		products.id,
 		products.customer_id,
-		products.name,
+		products.names,
 		products.descriptions,
 		products.categories,
-		products.prices
+		products.prices,
+		products.price_history
 	`)
 	if filter.Id != "" {
 		gormQuery = gormQuery.Where("products.id = ?", filter.Id)
@@ -80,10 +81,11 @@ func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, er
 		if err = rows.Scan(
 			&product.Id,
 			&product.CustomerId,
-			&product.Name,
+			&product.Names,
 			&product.Descriptions,
 			&product.Categories,
 			&product.Prices,
+			&product.PriceHistory,
 		); err != nil {
 			return nil, err
 		}

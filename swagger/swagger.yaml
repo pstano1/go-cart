@@ -16,12 +16,6 @@ basePath: "/api"
 schemes:
   - "http"
   - "https"
-components:
-  securitySchemes:
-    bearerAuth:       
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
 tags:
   - name: "other"
     description: "operations that aren't grouped anywhere else"
@@ -50,8 +44,10 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "object"
+          content:
+            application/json:
+              schema:
+                type: "object"
   /customer/id/{tag}:
     get:
       tags:
@@ -66,11 +62,13 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "object"
-            properties:
-              id:
-                type: "string"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  id:
+                    type: "string"
   /user/permission:
     get:
       tags:
@@ -82,10 +80,12 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "array"
-            items:
-              type: "string"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "string"
   /user:
     get:
       tags:
@@ -110,10 +110,12 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/User"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/User"
     post:
       tags:
         - "users"
@@ -144,11 +146,13 @@ paths:
       responses:
         201:
           description: "Success"
-          schema:
-            type: "object"
-            properties:
-              id:
-                type: "string"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  id:
+                    type: "string"
     put:
       tags:
         - "users"
@@ -160,12 +164,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/definitions/User"
+                $ref: "#/components/schemas/User"
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /user/{id}:
     delete:
       tags:
@@ -183,8 +189,10 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /user/signin:
     post:
       tags:
@@ -204,17 +212,19 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "object"
-            properties:
-              username:
-                type: "string"
-              permissions:
-                type: "array"
-                items:
-                  type: "string"
-              sessionToken:
-                type: "string"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  username:
+                    type: "string"
+                  permissions:
+                    type: "array"
+                    items:
+                      type: "string"
+                  sessionToken:
+                    type: "string"
   /user/refresh:
     post:
       tags:
@@ -223,17 +233,19 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "object"
-            properties:
-              username:
-                type: "string"
-              permissions:
-                type: "array"
-                items:
-                  type: "string"
-              sessionToken:
-                type: "string"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  username:
+                    type: "string"
+                  permissions:
+                    type: "array"
+                    items:
+                      type: "string"
+                  sessionToken:
+                    type: "string"
   /product:
     get:
       tags:
@@ -257,10 +269,12 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Product"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Product"
     post:
       tags:
         - "products"
@@ -274,8 +288,10 @@ paths:
               schema:
                 type: "object"
                 properties:
-                  name:
-                    type: "string"
+                  names:
+                    type: "object"
+                    additionalProperties:
+                      type: "string"
                   descriptions:
                     type: "object"
                     additionalProperties:
@@ -294,11 +310,13 @@ paths:
       responses:
         201:
           description: "Success"
-          schema:
-            type: "object"
-            properties:
-              id:
-                type: "string"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  id:
+                    type: "string"
     put:
       tags:
         - "products"
@@ -310,12 +328,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/definitions/Product"
+                $ref: "#/components/schemas/Product"
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /product/{id}:
     delete:
       tags:
@@ -333,8 +353,10 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /product/category:
     get:
       tags:
@@ -353,10 +375,12 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "array"
-            items:
-              type: "string"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "string"
     post:
       tags:
         - "products"
@@ -377,11 +401,13 @@ paths:
       responses:
         201:
           description: "Success"
-          schema:
-            type: "object"
-            properties:
-              id:
-                type: "string"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  id:
+                    type: "string"
     put:
       tags:
         - "products"
@@ -402,8 +428,10 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /product/category/{id}:
     delete:
       tags:
@@ -421,8 +449,10 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /coupon:
     get:
       tags:
@@ -441,10 +471,12 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Coupon"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Coupon"
     post:
       tags:
         - "coupons"
@@ -467,11 +499,13 @@ paths:
       responses:
         201:
           description: "Success"
-          schema:
-            type: "object"
-            properties:
-              id:
-                type: "string"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  id:
+                    type: "string"
     put:
       tags:
         - "coupons"
@@ -483,12 +517,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/Coupon"
+              $ref: "#/components/schemas/Coupon"
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /coupon/{id}:
     delete:
       tags:
@@ -506,8 +542,10 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /order:
     get:
       tags:
@@ -528,10 +566,12 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Order"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Order"
     post:
       tags:
         - "orders"
@@ -577,11 +617,13 @@ paths:
       responses:
           201:
             description: "Success"
-            schema:
-              type: "object"
-              properties:
-                id:
-                  type: "string"
+            content:
+              application/json:
+                schema:
+                  type: "object"
+                  properties:
+                    id:
+                      type: "string"
     put:
       tags:
         - "orders"
@@ -593,12 +635,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/Order"
+              $ref: "#/components/schemas/Order"
       responses:
         200:
           description: "Success"
-          schema:
-            type: "string"
+          content:
+            application/json:
+              schema:
+                type: "string"
   /order/{id}:
     delete:
       tags:
@@ -616,94 +660,106 @@ paths:
       responses:
         200:
           description: "Success"
-          schema:
+          content:
+            application/json:
+              schema:
+                type: "string"
+components:
+  securitySchemes:
+    bearerAuth:       
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        username:
+          type: "string"
+        email:
+          type: "string"
+        permissions:
+          type: "array"
+          items:
             type: "string"
-definitions:
-  User:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-      username:
-        type: "string"
-      email:
-        type: "string"
-      permissions:
-        type: "array"
-        items:
+        isActive:
+          type: "boolean"
+        customerId:
           type: "string"
-      isActive:
-        type: "boolean"
-      customerId:
-        type: "string"
-  Product:
-    type: "object"
-    properties:
-      id: 
-        type: "string"
-      name:
-        type: "string"
-      categories:
-        type: "array"
-        items:
+    Product:
+      type: "object"
+      properties:
+        id: 
           type: "string"
-      descriptions:
-        type: "object"
-        additionalProperties:
+        names:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        categories:
+          type: "array"
+          items:
+            type: "string"
+        descriptions:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        prices:
+          type: "object"
+          additionalProperties:
+            type: "number"
+            multipleOf: 0.01
+        priceHistory:
+          type: ["null", "object"]
+        customerId:
           type: "string"
-      prices:
-        type: "object"
-        additionalProperties:
+    Coupon:
+      type: "object"
+      properties:
+        id: 
+          type: "string"
+        promoCode:
+          type: "string"
+        amount:
+          type: "number"
+        categories:
+          type: "array"
+          items:
+            type: "string"
+        isActive:
+          type: "string"
+    Order:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        totalCost:
           type: "number"
           multipleOf: 0.01
-      customerId:
-        type: "string"
-  Coupon:
-    type: "object"
-    properties:
-      id: 
-        type: "string"
-      promoCode:
-        type: "string"
-      amount:
-        type: "number"
-      categories:
-        type: "array"
-        items:
+        currency:
           type: "string"
-      isActive:
-        type: "string"
-  Order:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-      totalCost:
-        type: "number"
-        multipleOf: 0.01
-      currency:
-        type: "string"
-      country:
-        type: "string"
-      city:
-        type: "string"
-      postalCode:
-        type: "string"
-      address:
-        type: "string"
-      status:
-        type: "string"
-      basket:
-        type: "object"
-        additionalProperties:
+        country:
+          type: "string"
+        city:
+          type: "string"
+        postalCode:
+          type: "string"
+        address:
+          type: "string"
+        status:
+          type: "string"
+        basket:
           type: "object"
-          schema:
-            name:
-              type: "string"
-            price:
-              type: "number"
-              multiplyOf: 0.01
-            currency:
-              type: "string"
-            quantity:
-              type: "number"
+          additionalProperties:
+            type: "object"
+            schema:
+              name:
+                type: "string"
+              price:
+                type: "number"
+                multiplyOf: 0.01
+              currency:
+                type: "string"
+              quantity:
+                type: "number"

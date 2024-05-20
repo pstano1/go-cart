@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Adjust those variables before runnning the script
-username="admin2"
-password="Admin1234mat@"
+username="admin1"
+password=""
 URL="http://localhost:8000/api"
 
 customerTag="dev"
@@ -26,9 +26,9 @@ interpretStatus "$statusCode" "/error/{lang}"
 
 # /customer/id/{tag}
 # gets customerId based on a provided tag
-customerId=$(curl -s -X GET "$URL/customer/id/${customerTag}" | jq -r '.id')
+customerId=$(curl -s -X GET "$URL/customer/id/${customerTag}" | jq -r '.id' 2>/dev/null)
 statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X GET "$URL/customer/id/${customerTag}")
-interpretStatus "$statusCode" "/customer/id/${customerTag}"
+interpretStatus "$statusCode" "/customer/id/{tag}"
 
 # /user/signin
 # sign user in
@@ -43,7 +43,7 @@ EOF
 sessionToken=$(curl -s -X POST \
     -H "Content-Type: application/json" \
     -d "$payload" \
-    "$URL/user/signin" | jq -r '.sessionToken')
+    "$URL/user/signin" | jq -r '.sessionToken' 2>/dev/null)
 
 statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
     -H "Content-Type: application/json" \
@@ -101,7 +101,7 @@ response=$(curl -s -w "\n%{http_code}" -X POST \
     "$URL/user/")
 
 body=$(echo "$response" | sed '$d')
-userId=$(echo "$body" | jq -r '.id')
+userId=$(echo "$body" | jq -r '.id' 2>/dev/null)
 statusCode=$(echo "$response" | tail -n 1)
 
 interpretStatus "$statusCode" "POST /user/"
@@ -156,7 +156,7 @@ response=$(curl -s -w "\n%{http_code}" -X POST \
     "$URL/product/category")
 
 body=$(echo "$response" | sed '$d')
-categoryId=$(echo "$body" | jq -r '.id')
+categoryId=$(echo "$body" | jq -r '.id' 2>/dev/null)
 statusCode=$(echo "$response" | tail -n 1)
 
 interpretStatus "$statusCode" "POST /product/category"
@@ -202,7 +202,10 @@ interpretStatus "$statusCode" "GET /product"
 # Create a product
 payload=$(cat <<EOF
 {
-  "name": "product #0",
+  "names": {
+    "PL": "Produkt nr 1",
+    "EN": "Product #1"
+  },
   "categories": [
     "test-1"
   ],
@@ -226,7 +229,7 @@ response=$(curl -s -w "\n%{http_code}" -X POST \
     "$URL/product/")
 
 body=$(echo "$response" | sed '$d')
-productId=$(echo "$body" | jq -r '.id')
+productId=$(echo "$body" | jq -r '.id' 2>/dev/null)
 statusCode=$(echo "$response" | tail -n 1)
 
 interpretStatus "$statusCode" "POST /product"
@@ -235,7 +238,10 @@ interpretStatus "$statusCode" "POST /product"
 # Update a product
 payload=$(cat <<EOF
 {
-  "name": "product #123",
+  "names": {
+    "PL": "Produkt nr 123",
+    "EN": "Product #123"
+  },
   "categories": [
     "test",
     "test-1"
@@ -300,7 +306,7 @@ response=$(curl -s -w "\n%{http_code}" -X POST \
     "$URL/coupon/")
 
 body=$(echo "$response" | sed '$d')
-couponId=$(echo "$body" | jq -r '.id')
+couponId=$(echo "$body" | jq -r '.id' 2>/dev/null)
 statusCode=$(echo "$response" | tail -n 1)
 
 interpretStatus "$statusCode" "POST /coupon"
@@ -378,7 +384,7 @@ response=$(curl -s -w "\n%{http_code}" -X POST \
     "$URL/order/")
 
 body=$(echo "$response" | sed '$d')
-orderId=$(echo "$body" | jq -r '.id')
+orderId=$(echo "$body" | jq -r '.id' 2>/dev/null)
 statusCode=$(echo "$response" | tail -n 1)
 
 interpretStatus "$statusCode" "POST /order"

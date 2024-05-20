@@ -1,6 +1,8 @@
 package api
 
 import (
+	"time"
+
 	"github.com/jinzhu/copier"
 	"github.com/pstano1/go-cart/internal/pkg"
 	"go.uber.org/zap"
@@ -33,6 +35,7 @@ func (a *InstanceAPI) UpdateUser(request *pkg.UserUpdate) error {
 	return nil
 }
 
+// UpdateProduct updates products model with given data
 func (a *InstanceAPI) UpdateProduct(request *pkg.ProductUpdate) error {
 	a.log.Debug("updating product info",
 		zap.String("id", request.Id),
@@ -47,6 +50,17 @@ func (a *InstanceAPI) UpdateProduct(request *pkg.ProductUpdate) error {
 		return pkg.ErrProductNotFound
 	}
 	product := products[0]
+	if !comparePrices(product.Prices, request.Prices) {
+		timestamp := time.Now().Format(time.RFC3339)
+		if product.PriceHistory == nil {
+			product.PriceHistory = make(map[string]interface{})
+		}
+		for key, value := range request.Prices {
+			product.PriceHistory[timestamp] = map[string]interface{}{
+				key: value,
+			}
+		}
+	}
 	err = copier.Copy(&product, request)
 	if err != nil {
 		a.log.Debug(err.Error())
@@ -58,6 +72,20 @@ func (a *InstanceAPI) UpdateProduct(request *pkg.ProductUpdate) error {
 		return pkg.ErrUpdatingProduct
 	}
 	return nil
+}
+
+// comparePrices is a helper func for UpdateProduct
+// checks if prices changed so the prices history can be stored if needed
+func comparePrices(oldPrices, newPrices map[string]interface{}) bool {
+	if len(oldPrices) != len(newPrices) {
+		return false
+	}
+	for key, oldValue := range oldPrices {
+		if newValue, exists := newPrices[key]; !exists || newValue != oldValue {
+			return false
+		}
+	}
+	return true
 }
 
 func (a *InstanceAPI) UpdateCategory(request *pkg.CategoryUpdate) error {

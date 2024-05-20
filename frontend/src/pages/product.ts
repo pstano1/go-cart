@@ -4,7 +4,7 @@ import { IProduct } from '../pkg/models'
 import { ProductUpdate } from '../pkg/requests'
 
 interface IProductView extends m.Component {
-  product: IProduct
+  product: Partial<IProduct>
   fetchProduct: (id: string) => void
   languages: string[]
   currencies: string[]
@@ -26,7 +26,7 @@ const Product: IProductView = {
     const formData = new FormData(event.target as HTMLFormElement)
     let product: ProductUpdate = {
       id: Product.product?.id,
-      name: '',
+      names: {},
       categories: ['test', 'test1', 'test2', 'broad-category', 'test3'],
       descriptions: {},
       prices: {},
@@ -36,14 +36,16 @@ const Product: IProductView = {
       if (key === 'categories') {
         // pass
       }
-      if (key.length === 2) {
+      if (key.includes('description')) {
+        key = key.replace('description-', '')
         product.descriptions[key] = value as string
+      }
+      if (key.includes('name')) {
+        key = key.replace('name-', '')
+        product.names[key] = value as string
       }
       if (key.length === 3) {
         product.prices[key] = Number(value)
-      }
-      if (key === 'name') {
-        product.name = value as string
       }
     }
 
@@ -129,12 +131,17 @@ const Product: IProductView = {
           ),
         ]),
         m('form', { className: 'block h-fit', name: 'product', onsubmit: Product.handleSubmit }, [
-          m('input', {
-            type: 'text',
-            name: 'name',
-            className: 'shadow inline-block my-4 text-lg w-full py-3 px-2 rounded w-fit',
-            value: Product.product?.name,
-          }),
+          m(
+            'div',
+            Product.languages?.map((language) => [
+              m('label', { className: 'text-lg' }, language),
+              m('input', {
+                name: 'name-' + language,
+                className: 'shadow inline-block my-4 text-lg w-full py-3 px-2 rounded w-fit',
+                value: Product.product?.names[language],
+              }),
+            ]),
+          ),
           m('label', { className: 'text-lg text-bolder' }, 'Description'),
           m(
             'div',
@@ -142,7 +149,7 @@ const Product: IProductView = {
               m('label', { className: 'text-lg' }, language),
               m('textarea', {
                 maxlength: 250,
-                name: language,
+                name: 'description-' + language,
                 className: 'shadow block my-4 text-lg w-full py-3 px-2 rounded resize-none',
                 value: Product.product?.descriptions[language],
               }),

@@ -5,7 +5,9 @@ export interface Credentials {
 }
 
 export interface ProductCreate {
-  name: string
+  name: {
+    [key: string]: string
+  }
   categories: string[]
   descriptions: {
     [key: string]: string

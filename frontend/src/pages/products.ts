@@ -102,7 +102,7 @@ const Products: IProductView = {
             }),
             m('div', { className: 'p-5' }, [
               m('div', { className: 'flex space-between items-center' }, [
-                m('h4', { className: 'my-2 text-xl text-bolder' }, product.name),
+                m('h4', { className: 'my-2 text-xl text-bolder' }, product.names['PL']),
                 m('span', { className: 'flex-1' }),
                 m(
                   'div',

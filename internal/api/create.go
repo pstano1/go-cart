@@ -53,9 +53,10 @@ func (a *InstanceAPI) CreateUser(request *pkg.UserCreate) (*string, error) {
 	return &user.Id, nil
 }
 
+// CreateProduct processes request data - validates it & then creates model instance
+// with given data
 func (a *InstanceAPI) CreateProduct(request *pkg.ProductCreate) (*string, error) {
 	a.log.Debug("creating product",
-		zap.String("name", request.Name),
 		zap.String("customer", request.CustomerId),
 	)
 	var product pkg.Product
@@ -66,8 +67,14 @@ func (a *InstanceAPI) CreateProduct(request *pkg.ProductCreate) (*string, error)
 		)
 		return nil, err
 	}
+	for key, value := range product.Names {
+		print(key)
+		if !isValidNameOrDescription(key, value) {
+			return nil, pkg.ErrInvalidNameKeyOrValue
+		}
+	}
 	for key, value := range product.Descriptions {
-		if !isValidDescription(key, value) {
+		if !isValidNameOrDescription(key, value) {
 			return nil, pkg.ErrInvalidDescriptionKeyOrValue
 		}
 	}
@@ -81,7 +88,6 @@ func (a *InstanceAPI) CreateProduct(request *pkg.ProductCreate) (*string, error)
 	err = a.dbController.Create(&product)
 	if err != nil {
 		a.log.Error("error while creating product",
-			zap.String("name", request.Name),
 			zap.Error(err),
 		)
 		return nil, pkg.ErrCreatingProduct

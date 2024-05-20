@@ -28,4 +28,5 @@ var (
 	ErrUpdatingOrder                = errors.New("ERROR-UPDATING-ORDER")
 	ErrCreatingOrder                = errors.New("ERROR-CREATING-ORDER")
 	ErrInvalidBasketValue           = errors.New("ERROR-INVALID-BASKET-VALUE")
+	ErrInvalidNameKeyOrValue        = errors.New("ERROR-INVALID-NAME")
 )

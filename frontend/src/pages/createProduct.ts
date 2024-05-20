@@ -16,7 +16,7 @@ const CreateProduct: ICreateProductView = {
 
     const formData = new FormData(event.target as HTMLFormElement)
     let newProduct: ProductCreate = {
-      name: '',
+      names: {},
       categories: ['test', 'test1', 'test2', 'broad-category', 'test3'],
       descriptions: {},
       prices: {},
@@ -26,14 +26,16 @@ const CreateProduct: ICreateProductView = {
       if (key === 'categories') {
         // pass
       }
-      if (key.length === 2) {
+      if (key.includes('description')) {
+        key = key.replace('description-', '')
         newProduct.descriptions[key] = value as string
+      }
+      if (key.includes('name')) {
+        key = key.replace('name-', '')
+        newProduct.names[key] = value as string
       }
       if (key.length === 3) {
         newProduct.prices[key] = Number(value)
-      }
-      if (key === 'name') {
-        newProduct.name = value as string
       }
     }
 
@@ -105,11 +107,16 @@ const CreateProduct: ICreateProductView = {
         },
         [
           m('label', { className: 'text-lg text-bolder' }, 'Name'),
-          m('input', {
-            type: 'text',
-            name: 'name',
-            className: 'shadow block my-4 text-lg w-full py-3 px-2 rounded',
-          }),
+          m(
+            'div',
+            CreateProduct.languages?.map((language) => [
+              m('label', { className: 'text-lg' }, language),
+              m('input', {
+                name: 'name-' + language,
+                className: 'shadow inline-block my-4 text-lg w-full py-3 px-2 rounded w-fit',
+              }),
+            ]),
+          ),
           m('label', { className: 'text-lg text-bolder' }, 'Categories'),
           m('select', { className: 'shadow block my-4 text-lg w-full py-3 px-2 rounded' }),
           m('label', { className: 'text-lg text-bolder' }, 'Description'),
@@ -119,7 +126,7 @@ const CreateProduct: ICreateProductView = {
               m('label', { className: 'text-lg' }, language),
               m('textarea', {
                 maxlength: 250,
-                name: language,
+                name: 'description-' + language,
                 className: 'shadow block my-4 text-lg w-full py-3 px-2 rounded resize-none',
               }),
             ]),

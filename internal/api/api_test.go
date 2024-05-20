@@ -124,13 +124,13 @@ func TestDescriptionValidator(t *testing.T) {
 				key:   "EN",
 				value: "Lorem ipsum...",
 			},
-			want: false,
+			want: true,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			ok := isValidPrice(test.description.key, test.description.value)
+			ok := isValidNameOrDescription(test.description.key, test.description.value)
 			if ok != test.want {
 				t.Errorf("%s - got %t, want %t", test.name, ok, test.want)
 			}

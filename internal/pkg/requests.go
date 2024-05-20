@@ -26,7 +26,7 @@ type UserUpdate struct {
 
 type ProductCreate struct {
 	CustomerSpecificModel
-	Name         string   `json:"name"`
+	Names        JSONB    `json:"names"`
 	Descriptions JSONB    `json:"descriptions"`
 	Categories   []string `json:"categories"`
 	Prices       JSONB    `json:"prices"`
@@ -35,7 +35,7 @@ type ProductCreate struct {
 type ProductUpdate struct {
 	CustomerSpecificModel
 	Id           string         `json:"id"`
-	Name         string         `json:"name"`
+	Names        JSONB          `json:"names"`
 	Descriptions JSONB          `json:"descriptions"`
 	Categories   pq.StringArray `json:"categories"`
 	Prices       JSONB          `json:"prices"`
@@ -56,6 +56,7 @@ type CouponCreate struct {
 	CustomerSpecificModel
 	PromoCode string `json:"promoCode"`
 	Amount    int    `json:"amount"`
+	Unit      string `json:"unit"`
 }
 
 type CouponUpdate struct {
@@ -63,6 +64,7 @@ type CouponUpdate struct {
 	Id        string `json:"id"`
 	PromoCode string `json:"promoCode"`
 	Amount    int    `json:"amount"`
+	Unit      string `json:"unit"`
 }
 
 type OrderCreate struct {
@@ -74,6 +76,7 @@ type OrderCreate struct {
 	PostalCode string  `json:"postalCode"`
 	Address    string  `json:"address"`
 	Basket     JSONB   `json:"basket"`
+	TaxId      string  `json:"taxId"`
 }
 
 type OrderUpdate struct {
@@ -87,4 +90,5 @@ type OrderUpdate struct {
 	Address    string  `json:"address"`
 	Status     string  `json:"status"`
 	Basket     JSONB   `json:"basket"`
+	TaxId      string  `json:"taxId"`
 }

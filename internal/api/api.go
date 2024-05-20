@@ -58,7 +58,7 @@ func isValidPrice(key string, value interface{}) bool {
 	}
 }
 
-func isValidDescription(key string, value interface{}) bool {
+func isValidNameOrDescription(key string, value interface{}) bool {
 	regex := regexp.MustCompile(`^[A-Z]{2}$`)
 	if !regex.MatchString(key) {
 		return false
