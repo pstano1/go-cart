@@ -224,13 +224,18 @@ func validatePermissions(requiredPermissions []string, ctx *fasthttp.RequestCtx)
 	}
 	content, ok := claims["user"].(map[string]interface{})
 	if !ok {
-		print("here3")
 		return false
 	}
-	userPermissions := content["permissions"].([]interface{})
+	userPermissions, ok := content["permissions"].([]interface{})
+	if !ok {
+		return false
+	}
 	permissionSet := make(map[string]bool)
 	for _, inter := range userPermissions {
-		permission, _ := inter.(string)
+		permission, ok := inter.(string)
+		if !ok {
+			return false
+		}
 		permissionSet[permission] = true
 	}
 	for _, permission := range requiredPermissions {

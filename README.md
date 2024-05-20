@@ -29,10 +29,16 @@
   - [] images storage;
   - [] add price history;
   - [] payment processing;
-  - [] allow for localized product names;
-  - [] BUG: server crashes when user doesn't have any permission;
+  - [] localized product names;
+  - [x] BUG: server crashes when user doesn't have any permission;
+  - [] scrape exchange rates in 24h interval;
+  - [] proccessing of coupons to orders;
+  - [] add TAXID to orders;
+  - [] add unit (percentage/currency) to coupon;
+  - [] invoice/receipt generation;
+  - [] mail sending;
 - other:
-  - [] swagger;
+  - [x] swagger;
   - [] makefile;
   - [] .sh script;
   - [] README.md;
