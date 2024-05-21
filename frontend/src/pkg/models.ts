@@ -14,3 +14,8 @@ export interface IProduct {
     [key: string]: number
   }
 }
+
+export interface ICategory {
+  id: string
+  name: string
+}

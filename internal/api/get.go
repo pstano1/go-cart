@@ -22,7 +22,7 @@ func (a *InstanceAPI) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, err
 	return a.dbController.GetProducts(filter)
 }
 
-func (a *InstanceAPI) GetCategories(filter *pkg.CategoryFilter) ([]string, error) {
+func (a *InstanceAPI) GetCategories(filter *pkg.CategoryFilter) ([]pkg.ProductCategory, error) {
 	return a.dbController.GetCategories(filter)
 }
 

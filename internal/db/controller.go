@@ -15,7 +15,7 @@ type IDBController interface {
 
 	GetUsers(filter *pkg.UserFilter) ([]pkg.User, error)
 	GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, error)
-	GetCategories(filter *pkg.CategoryFilter) ([]string, error)
+	GetCategories(filter *pkg.CategoryFilter) ([]pkg.ProductCategory, error)
 	GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error)
 	GetOrders(filter *pkg.OrderFilter) ([]pkg.Order, error)
 	GetPermissions() ([]string, error)

@@ -5,7 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios'
 import { Credentials, ProductCreate, CategoryCreate, ProductUpdate } from './pkg/requests'
-import { IProduct } from './pkg/models'
+import { ICategory, IProduct } from './pkg/models'
 
 interface IAPI {
   signUserIn(credentials: Credentials): Promise<AxiosResponse<any>>
@@ -13,8 +13,10 @@ interface IAPI {
   createProduct(product: ProductCreate): Promise<AxiosResponse<void>>
   updateProduct(product: ProductUpdate): Promise<AxiosResponse<void>>
   deleteProduct(id: string): Promise<AxiosResponse<string>>
-  getCategories(): Promise<AxiosResponse<string[]>>
+  getCategories(): Promise<AxiosResponse<ICategory[]>>
   createCategory(category: CategoryCreate): Promise<AxiosResponse<string>>
+  updateCategory(category: ICategory): Promise<AxiosResponse<string>>
+  deleteCategory(id: string): Promise<AxiosResponse<void>>
 }
 
 class API implements IAPI {
@@ -102,13 +104,25 @@ class API implements IAPI {
     )()
   }
 
-  public async getCategories(): Promise<AxiosResponse<string[]>> {
+  public async getCategories(): Promise<AxiosResponse<ICategory[]>> {
     return this.instance.get('/product/category')
   }
 
   public async createCategory(category: CategoryCreate): Promise<AxiosResponse<string>> {
     return this.injectSessionToken((mergedConfig) =>
       this.instance.post('/product/category', category, mergedConfig),
+    )()
+  }
+
+  public async updateCategory(category: ICategory): Promise<AxiosResponse<string>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.put('/product/category', category, mergedConfig),
+    )()
+  }
+
+  public async deleteCategory(id: string): Promise<AxiosResponse<void>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.delete(`/product/category/${id}`, mergedConfig),
     )()
   }
 

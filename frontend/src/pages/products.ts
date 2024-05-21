@@ -1,13 +1,21 @@
 import m from 'mithril'
 import API from '../api'
-import { IProduct } from '../pkg/models'
+import { ICategory, IProduct } from '../pkg/models'
+
+import AddIcon from '../../bin/images/icons/plus.svg'
+import SaveIcon from '../../bin/images/icons/save.svg'
+import EditIcon from '../../bin/images/icons/edit-2.svg'
+import DeleteIcon from '../../bin/images/icons/trash-2.svg'
 
 interface IProductView extends m.Component {
   products: IProduct[]
-  categories: string[]
+  categories: ICategory[]
+  categoryInEdition: string
   saveCategory: () => void
   fetchProducts: () => void
   fetchCategories: () => void
+  updateCategory: (category: ICategory) => void
+  deleteCategory: (id: string) => void
 }
 
 const Products: IProductView = {
@@ -50,6 +58,17 @@ const Products: IProductView = {
       .catch((err) => {
         // handle error
       })
+  },
+  updateCategory: (category: ICategory): void => {
+    API.updateCategory(category)
+  },
+  deleteCategory: (id: string): void => {
+    API.deleteCategory(id)
+      .then((res) => {})
+      .then(() => {
+        m.redraw()
+      })
+      .catch((err) => {})
   },
   view: () => {
     return m('main', [
@@ -161,7 +180,61 @@ const Products: IProductView = {
           ),
           m('tbody', [
             Products.categories.map((category) =>
-              m('tr', [m('td', { className: 'py-3 text-center w-1/2' }, category), m('td')]),
+              m('tr', [
+                m(
+                  'td',
+                  { className: 'py-3 text-center w-1/2' },
+                  Products.categoryInEdition === category.id ?
+                    m('input', {
+                      id: 'new-category-name',
+                      value: category.name,
+                      className: 'shadow block my-2 text-lg mx-2 py-3 px-2 rounded w-full',
+                    })
+                  : category.name,
+                ),
+                m(
+                  'td',
+                  { className: 'flex items-center justify-center gap-5' },
+                  Products.categoryInEdition === category.id ?
+                    m(
+                      'button',
+                      {
+                        onclick: (event: Event) => {
+                          event.preventDefault()
+                          Products.updateCategory({
+                            name: (document.getElementById('new-category-name') as HTMLInputElement)
+                              .value,
+                            id: category.id,
+                          })
+                        },
+                        className: 'block my-auto mx-auto',
+                      },
+                      m('img', { src: SaveIcon }),
+                    )
+                  : [
+                      m(
+                        'button',
+                        {
+                          onclick: (event: Event) => {
+                            event.preventDefault()
+                            Products.categoryInEdition = category.id
+                          },
+                        },
+                        m('img', { src: EditIcon }),
+                      ),
+                      m(
+                        'button',
+                        {
+                          onclick: (event: Event) => {
+                            event.preventDefault()
+                            Products.deleteCategory(category.id)
+                          },
+                        },
+                        m('img', { src: DeleteIcon }),
+                      ),
+                    ],
+                ),
+              ]),
             ),
             m('tr', [
               m(
@@ -173,15 +246,18 @@ const Products: IProductView = {
                 }),
               ),
               m(
-                'button',
-                {
-                  onclick: (event: Event) => {
-                    event.preventDefault()
-                    Products.saveCategory()
+                'td',
+                m(
+                  'button',
+                  {
+                    onclick: (event: Event) => {
+                      event.preventDefault()
+                      Products.saveCategory()
+                    },
+                    className: 'block my-auto mx-auto',
                   },
-                  className: 'block my-auto mx-auto',
-                },
-                'save',
+                  m('img', { src: AddIcon }),
+                ),
               ),
             ]),
           ]),
@@ -191,6 +267,7 @@ const Products: IProductView = {
   },
   products: [],
   categories: [],
+  categoryInEdition: '',
 }
 
 export default Products

@@ -94,10 +94,11 @@ func (d *DBController) GetProducts(filter *pkg.ProductFilter) ([]pkg.Product, er
 	return products, nil
 }
 
-func (d *DBController) GetCategories(filter *pkg.CategoryFilter) ([]string, error) {
-	categories := make([]string, 0)
+func (d *DBController) GetCategories(filter *pkg.CategoryFilter) ([]pkg.ProductCategory, error) {
+	categories := make([]pkg.ProductCategory, 0)
 	gormQuery := d.gormDB.Table("product_categories").Select(`
-		product_categories.name
+		product_categories.name,
+		product_categories.id
 	`)
 	if filter.Id != "" {
 		gormQuery = gormQuery.Where("product_categories.id = ?", filter.Id)
@@ -111,9 +112,10 @@ func (d *DBController) GetCategories(filter *pkg.CategoryFilter) ([]string, erro
 		return nil, err
 	}
 	for rows.Next() {
-		var category string
+		var category pkg.ProductCategory
 		if err = rows.Scan(
-			&category,
+			&category.Name,
+			&category.Id,
 		); err != nil {
 			return nil, err
 		}

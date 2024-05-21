@@ -2,6 +2,7 @@ node_modules/
 .vscode/
 frontend/bin/main.js
 frontend/bin/output.css
+frontend/bin/assets/
 
 .DS_STORE
 

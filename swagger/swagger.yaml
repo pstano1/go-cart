@@ -380,7 +380,12 @@ paths:
               schema:
                 type: "array"
                 items:
-                  type: "string"
+                  type: "object"
+                  schema:
+                    id:
+                      type: "string"
+                    name:
+                      type: "string"
     post:
       tags:
         - "products"
