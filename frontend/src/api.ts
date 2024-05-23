@@ -5,7 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios'
 import { Credentials, ProductCreate, CategoryCreate, ProductUpdate } from './pkg/requests'
-import { ICategory, IProduct } from './pkg/models'
+import { ICategory, ICoupon, IProduct } from './pkg/models'
 
 interface IAPI {
   signUserIn(credentials: Credentials): Promise<AxiosResponse<any>>
@@ -17,6 +17,7 @@ interface IAPI {
   createCategory(category: CategoryCreate): Promise<AxiosResponse<string>>
   updateCategory(category: ICategory): Promise<AxiosResponse<string>>
   deleteCategory(id: string): Promise<AxiosResponse<void>>
+  getCoupons(): Promise<AxiosResponse<ICoupon[]>>
 }
 
 class API implements IAPI {
@@ -124,6 +125,10 @@ class API implements IAPI {
     return this.injectSessionToken((mergedConfig) =>
       this.instance.delete(`/product/category/${id}`, mergedConfig),
     )()
+  }
+
+  getCoupons(): Promise<AxiosResponse<ICoupon[]>> {
+    return this.instance.get('/coupon')
   }
 
   public setupInterceptors() {

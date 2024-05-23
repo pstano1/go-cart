@@ -8,6 +8,7 @@ import (
 	"github.com/pstano1/go-cart/internal/api"
 	"github.com/pstano1/go-cart/internal/db"
 	"github.com/pstano1/go-cart/internal/http"
+	exchange "github.com/pstano1/go-cart/internal/pkg/exchangeProvider"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -31,7 +32,11 @@ func main() {
 	logger := zap.Must(zap.NewDevelopment())
 	defer logger.Sync()
 	server := createServerFromConfig(logger)
-	server.Run()
+
+	go server.GetExchangeRates()
+	go server.Run()
+
+	select {}
 }
 
 func createServerFromConfig(logger *zap.Logger) *http.HTTPInstanceAPI {
@@ -73,11 +78,14 @@ func createServerFromConfig(logger *zap.Logger) *http.HTTPInstanceAPI {
 	}
 	customerClient := client.NewCustomerService(conn, logger)
 
+	exchangeProvider := exchange.NewProvider(logger)
+
 	instanceAPI := api.NewInstanceAPI(&api.APIConfig{
-		Logger:         logger,
-		DBController:   dbController,
-		CustomerClient: customerClient,
-		SecretKey:      viper.GetString(confOptSecretKey),
+		Logger:           logger,
+		DBController:     dbController,
+		CustomerClient:   customerClient,
+		ExchangeProvider: exchangeProvider,
+		SecretKey:        viper.GetString(confOptSecretKey),
 	})
 
 	return http.NewHTTPInstanceAPI(&http.HTTPConfig{

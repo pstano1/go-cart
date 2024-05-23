@@ -6,6 +6,7 @@ import signIn from './pages/signIn'
 import Dashboard from './pages/dashboard'
 import Products from './pages/products'
 import Product from './pages/product'
+import Coupons from './pages/coupons'
 import CreateProduct from './pages/createProduct'
 
 // layout
@@ -30,6 +31,11 @@ m.route(document.body, '/signin', {
   '/products/:id': {
     render: () => {
       return m(RequireAuth, m(Layout, { contentComponent: Product }))
+    },
+  },
+  '/coupons': {
+    render: () => {
+      return m(RequireAuth, m(Layout, { contentComponent: Coupons }))
     },
   },
   '/signin': {

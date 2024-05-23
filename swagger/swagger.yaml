@@ -123,26 +123,26 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  username:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                username:
+                  type: "string"
+                password:
+                  type: "string"
+                passwordCheck:
+                  type: "string"
+                email:
+                  type: "string"
+                permissions:
+                  type: "array"
+                  items:
                     type: "string"
-                  password:
-                    type: "string"
-                  passwordCheck:
-                    type: "string"
-                  email:
-                    type: "string"
-                  permissions:
-                    type: "array"
-                    items:
-                      type: "string"
-                  customerId:
-                    type: "string"
+                customerId:
+                  type: "string"
       responses:
         201:
           description: "Success"
@@ -160,11 +160,11 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         200:
           description: "Success"
@@ -199,16 +199,16 @@ paths:
         - "users"
       summary: "Signs user in"
       requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  username:
-                    type: "string"
-                  password:
-                    type: "string"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                username:
+                  type: "string"
+                password:
+                  type: "string"
       responses:
         200:
           description: "Success"
@@ -282,31 +282,31 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  names:
-                    type: "object"
-                    additionalProperties:
-                      type: "string"
-                  descriptions:
-                    type: "object"
-                    additionalProperties:
-                      type: "string"
-                  categories:
-                    type: "array"
-                    items:
-                      type: "string"
-                  prices:
-                    type: "object"
-                    additionalProperties:
-                      type: "number"
-                      multipleOf: 0.01
-                  customerId:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                names:
+                  type: "object"
+                  additionalProperties:
                     type: "string"
+                descriptions:
+                  type: "object"
+                  additionalProperties:
+                    type: "string"
+                categories:
+                  type: "array"
+                  items:
+                    type: "string"
+                prices:
+                  type: "object"
+                  additionalProperties:
+                    type: "number"
+                    multipleOf: 0.01
+                customerId:
+                  type: "string"
       responses:
         201:
           description: "Success"
@@ -324,11 +324,11 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Product"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
       responses:
         200:
           description: "Success"
@@ -393,16 +393,16 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  name:
-                    type: "string"
-                  customerId:
-                      type: "string"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                name:
+                  type: "string"
+                customerId:
+                  type: "string"
       responses:
         201:
           description: "Success"
@@ -429,7 +429,7 @@ paths:
                 name:
                   type: "string"
                 customerId:
-                    type: "string"
+                  type: "string"
       responses:
         200:
           description: "Success"
@@ -489,18 +489,18 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  promoCode:
-                    type: "string"
-                  amount:
-                      type: "number"
-                  customerId:
-                    type: "string"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                promoCode:
+                  type: "string"
+                amount:
+                  type: "number"
+                customerId:
+                  type: "string"
       responses:
         201:
           description: "Success"
@@ -581,54 +581,52 @@ paths:
       tags:
         - "orders"
       summary: "Creates a new order"
-      security:
-        - bearerAuth: []
       requestBody:
-          required: true
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                customerId:
+                  type: "string"
+                totalCost:
+                  type: "number"
+                  format: "double"
+                currency:
+                  type: "string"
+                country:
+                  type: "string"
+                city:
+                  type: "string"
+                postalCode:
+                  type: "string"
+                address:
+                  type: "string"
+                basket:
+                  type: "object"
+                  additionalProperties:
+                    type: "object"
+                    properties:
+                      price:
+                        type: "number"
+                        format: "double"
+                      currency:
+                        type: "string"
+                      quantity:
+                        type: "integer"
+                      name:
+                        type: "string"
+      responses:
+        201:
+          description: "Success"
           content:
             application/json:
               schema:
                 type: "object"
                 properties:
-                  customerId:
+                  id:
                     type: "string"
-                  totalCost:
-                    type: "number"
-                    format: "double"
-                  currency:
-                    type: "string"
-                  country:
-                    type: "string"
-                  city:
-                    type: "string"
-                  postalCode:
-                    type: "string"
-                  address:
-                    type: "string"
-                  basket:
-                    type: "object"
-                    additionalProperties:
-                      type: "object"
-                      properties:
-                        price:
-                          type: "number"
-                          format: "double"
-                        currency:
-                          type: "string"
-                        quantity:
-                          type: "integer"
-                        name:
-                          type: "string"
-      responses:
-          201:
-            description: "Success"
-            content:
-              application/json:
-                schema:
-                  type: "object"
-                  properties:
-                    id:
-                      type: "string"
     put:
       tags:
         - "orders"
@@ -671,7 +669,7 @@ paths:
                 type: "string"
 components:
   securitySchemes:
-    bearerAuth:       
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
@@ -696,7 +694,7 @@ components:
     Product:
       type: "object"
       properties:
-        id: 
+        id:
           type: "string"
         names:
           type: "object"
@@ -722,7 +720,7 @@ components:
     Coupon:
       type: "object"
       properties:
-        id: 
+        id:
           type: "string"
         promoCode:
           type: "string"

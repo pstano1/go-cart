@@ -104,3 +104,20 @@ type Order struct {
 	Basket     JSONB          `gorm:"type:jsonb" json:"basket"`
 	TaxId      string         `json:"taxId"`
 }
+
+//---NOT DATABASE MODELS---//
+
+type ExchangeRate struct {
+	CurrencyName string  `json:"currency"`
+	CurrencyCode string  `json:"code"`
+	BidRate      float32 `json:"bid"`
+	AskRate      float32 `json:"ask"`
+}
+
+type NBPTable struct {
+	Name          string         `json:"table"`
+	Id            string         `json:"no"`
+	TradingDate   string         `json:"tradingDate"`
+	EffectiveDate string         `json:"effectiveDate"`
+	Rates         []ExchangeRate `json:"rates"`
+}

@@ -333,3 +333,20 @@ func (i *HTTPInstanceAPI) getError(ctx *fasthttp.RequestCtx) {
 	ctx.Response.SetBody(errors)
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
+
+// GetExchangeRates fetches exchange rates from NBP
+func (i *HTTPInstanceAPI) GetExchangeRates() {
+	for {
+		now := time.Now()
+
+		err := i.api.FetchExchangeRates()
+		if err != nil {
+			i.log.Error("error while fetching exchange rates",
+				zap.Error(err),
+			)
+		}
+
+		tomorrow := now.AddDate(0, 0, 1)
+		time.Sleep(tomorrow.Sub(now))
+	}
+}

@@ -31,7 +31,7 @@
   - [] payment processing;
   - [x] localized product names;
   - [x] BUG: server crashes when user doesn't have any permission;
-  - [] scrape exchange rates in 24h interval;
+  - [x] scrape exchange rates in 24h interval (API call in the end);
   - [] proccessing of coupons to orders;
   - [x] add TAXID to orders;
   - [x] add unit (percentage/currency) to coupon;
@@ -43,6 +43,7 @@
   - [x] .sh script;
   - [] README.md;
   - [ ] dockerfile;
+  - [ ] investigate dependabot's alerts;
 
 ### Running locally
 
@@ -69,11 +70,11 @@ Failed: GET /order
 
 #### database managing script
 
-|Flag|Action|
-|----|------|
-|migrate|creates tables|
-|create-permission|inserts predefined permissions into table|
-|flush|drops all the tables & creatres new ones|
+| Flag              | Action                                    |
+| ----------------- | ----------------------------------------- |
+| migrate           | creates tables                            |
+| create-permission | inserts predefined permissions into table |
+| flush             | drops all the tables & creatres new ones  |
 
 ```console
 go run ./scripts/manage.go <flag>

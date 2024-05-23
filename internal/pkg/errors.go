@@ -29,4 +29,9 @@ var (
 	ErrCreatingOrder                = errors.New("ERROR-CREATING-ORDER")
 	ErrInvalidBasketValue           = errors.New("ERROR-INVALID-BASKET-VALUE")
 	ErrInvalidNameKeyOrValue        = errors.New("ERROR-INVALID-NAME")
+
+	// errors not send to the end user
+	ErrStatusNotOK              = errors.New("received status different than 200")
+	ErrBaseCurrencyNotAvailable = errors.New("currency requested to be exchanged from is not available in respository")
+	ErrCurrencyNotAvailable     = errors.New("currency requested to be exchanged to is not available in respository")
 )

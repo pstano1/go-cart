@@ -5,31 +5,35 @@ import (
 
 	"github.com/pstano1/customer-api/client"
 	"github.com/pstano1/go-cart/internal/db"
+	exchange "github.com/pstano1/go-cart/internal/pkg/exchangeProvider"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func NewInstanceAPI(conf *APIConfig) *InstanceAPI {
 	return &InstanceAPI{
-		log:             conf.Logger,
-		dbController:    conf.DBController,
-		customerService: conf.CustomerClient,
-		secretKey:       conf.SecretKey,
+		log:              conf.Logger,
+		dbController:     conf.DBController,
+		customerService:  conf.CustomerClient,
+		exchangeProvider: conf.ExchangeProvider,
+		secretKey:        conf.SecretKey,
 	}
 }
 
 type APIConfig struct {
-	Logger         *zap.Logger
-	DBController   db.IDBController
-	CustomerClient client.ICustomerServiceClient
-	SecretKey      string
+	Logger           *zap.Logger
+	DBController     db.IDBController
+	CustomerClient   client.ICustomerServiceClient
+	ExchangeProvider exchange.IExchangeProvider
+	SecretKey        string
 }
 
 type InstanceAPI struct {
-	log             *zap.Logger
-	dbController    db.IDBController
-	customerService client.ICustomerServiceClient
-	secretKey       string
+	log              *zap.Logger
+	dbController     db.IDBController
+	customerService  client.ICustomerServiceClient
+	exchangeProvider exchange.IExchangeProvider
+	secretKey        string
 }
 
 func getHash(password []byte) (string, error) {
@@ -108,4 +112,13 @@ func isValidBasketEntry(key string, value interface{}) bool {
 	default:
 		return false
 	}
+}
+
+func (a *InstanceAPI) FetchExchangeRates() error {
+	for _, name := range []string{"a", "b", "c"} {
+		if err := a.exchangeProvider.FetchNBPTable(name); err != nil {
+			return err
+		}
+	}
+	return nil
 }

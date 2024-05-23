@@ -19,3 +19,9 @@ export interface ICategory {
   id: string
   name: string
 }
+
+export interface ICoupon {
+  promoCode: string
+  amount: number
+  unit: string
+}
