@@ -72,6 +72,7 @@ type OrderCreate struct {
 	TotalCost  float32 `json:"totalCost"`
 	Currency   string  `gorm:"size:3" json:"currency"`
 	Country    string  `gorm:"size:2" json:"country"`
+	Coupon     string  `json:"promoCode"`
 	City       string  `json:"city"`
 	PostalCode string  `json:"postalCode"`
 	Address    string  `json:"address"`
@@ -91,4 +92,13 @@ type OrderUpdate struct {
 	Status     string  `json:"status"`
 	Basket     JSONB   `json:"basket"`
 	TaxId      string  `json:"taxId"`
+}
+
+// ProductSummary is what's being stored
+// as basket product in database
+type ProductSummary struct {
+	Price    float32 `json:"price"`
+	Currency string  `json:"currency"`
+	Quantity int     `json:"quantity"`
+	Name     string  `json:"name"`
 }

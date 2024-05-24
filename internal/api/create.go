@@ -158,8 +158,42 @@ func (a *InstanceAPI) CreateOrder(request *pkg.OrderCreate) (*string, error) {
 		)
 		return nil, err
 	}
+	var total float32 = 0
 	for key, value := range request.Basket {
 		if !isValidBasketEntry(key, value) {
+			return nil, pkg.ErrInvalidBasketValue
+		}
+		product, err := a.GetProducts(&pkg.ProductFilter{
+			Id: key,
+		})
+		if err != nil || len(product) == 0 {
+			return nil, pkg.ErrInvalidBasketValue
+		}
+		prices := make(map[string]float32)
+		if err := product[0].Prices.Scan(&prices); err != nil {
+			return nil, err
+		}
+		productSummary, ok := value.(pkg.ProductSummary)
+		if !ok {
+			return nil, pkg.ErrInvalidBasketValue
+		}
+		if productSummary.Price != prices[productSummary.Currency] {
+			return nil, pkg.ErrInvalidBasketValue
+		}
+		total += productSummary.Price * float32(productSummary.Quantity)
+		coupons, err := a.GetCoupons(&pkg.CouponFilter{
+			Code:       request.Coupon,
+			CustomerId: request.CustomerId,
+		})
+		if len(coupons) != 0 && coupons[0].IsActive && err == nil {
+			if coupons[0].Unit == "percentage" {
+				total = total - (total * (float32(coupons[0].Amount) / 100))
+			} else {
+				rate, _ := a.exchangeProvider.GetExchangeRate(coupons[0].Unit, request.Currency)
+				total = total - (float32(coupons[0].Amount) * rate)
+			}
+		}
+		if order.TotalCost != total {
 			return nil, pkg.ErrInvalidBasketValue
 		}
 	}
@@ -172,5 +206,6 @@ func (a *InstanceAPI) CreateOrder(request *pkg.OrderCreate) (*string, error) {
 		)
 		return nil, pkg.ErrCreatingOrder
 	}
+	// send confirmation e-mail
 	return &order.Id, nil
 }

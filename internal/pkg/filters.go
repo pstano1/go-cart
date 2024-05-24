@@ -58,14 +58,16 @@ func (f CategoryFilter) Populate(ctx *fasthttp.RequestCtx) Filter {
 
 type CouponFilter struct {
 	Id         string
+	Code       string
 	CustomerId string
 }
 
 func (f CouponFilter) Populate(ctx *fasthttp.RequestCtx) Filter {
 	args := ctx.QueryArgs()
 
-	return &ProductFilter{
+	return &CouponFilter{
 		Id:         string(args.Peek("id")),
+		Code:       string(args.Peek("code")),
 		CustomerId: string(args.Peek("customerId")),
 	}
 }
@@ -78,7 +80,7 @@ type OrderFilter struct {
 func (f OrderFilter) Populate(ctx *fasthttp.RequestCtx) Filter {
 	args := ctx.QueryArgs()
 
-	return &ProductFilter{
+	return &OrderFilter{
 		Id:         string(args.Peek("id")),
 		CustomerId: string(args.Peek("customerId")),
 	}
