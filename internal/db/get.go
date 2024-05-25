@@ -131,6 +131,7 @@ func (d *DBController) GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error
 		coupons.customer_id,
 		coupons.promo_code,
 		coupons.amount,
+		coupons.unit,
 		coupons.is_active
 	`)
 	if filter.Id != "" {
@@ -151,6 +152,7 @@ func (d *DBController) GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error
 			&coupon.CustomerId,
 			&coupon.PromoCode,
 			&coupon.Amount,
+			&coupon.Unit,
 			&coupon.IsActive,
 		); err != nil {
 			return nil, err

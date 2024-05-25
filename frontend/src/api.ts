@@ -4,7 +4,14 @@ import axios, {
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from 'axios'
-import { Credentials, ProductCreate, CategoryCreate, ProductUpdate } from './pkg/requests'
+import {
+  Credentials,
+  ProductCreate,
+  CategoryCreate,
+  ProductUpdate,
+  CouponCreate,
+  CouponUpdate,
+} from './pkg/requests'
 import { ICategory, ICoupon, IProduct } from './pkg/models'
 
 interface IAPI {
@@ -18,6 +25,9 @@ interface IAPI {
   updateCategory(category: ICategory): Promise<AxiosResponse<string>>
   deleteCategory(id: string): Promise<AxiosResponse<void>>
   getCoupons(): Promise<AxiosResponse<ICoupon[]>>
+  updateCoupon(coupon: CouponUpdate): Promise<AxiosResponse<void>>
+  deleteCoupon(id: string): Promise<AxiosResponse<void>>
+  createCoupon(coupon: CouponCreate): Promise<AxiosResponse<string>>
 }
 
 class API implements IAPI {
@@ -127,8 +137,26 @@ class API implements IAPI {
     )()
   }
 
-  getCoupons(): Promise<AxiosResponse<ICoupon[]>> {
+  public async getCoupons(): Promise<AxiosResponse<ICoupon[]>> {
     return this.instance.get('/coupon')
+  }
+
+  public async updateCoupon(coupon: CouponUpdate): Promise<AxiosResponse<void>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.put('/coupon', coupon, mergedConfig),
+    )()
+  }
+
+  public async deleteCoupon(id: string): Promise<AxiosResponse<void>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.delete(`/coupon/${id}`, mergedConfig),
+    )()
+  }
+
+  public async createCoupon(coupon: CouponCreate): Promise<AxiosResponse<string>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.post('/coupon', coupon, mergedConfig),
+    )()
   }
 
   public setupInterceptors() {

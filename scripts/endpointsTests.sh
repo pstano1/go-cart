@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Adjust those variables before runnning the script
-username="admin1"
-password=""
+username="admin"
+password="Admin1234mat@"
 URL="http://localhost:8000/api"
 
 customerTag="dev"
@@ -270,15 +270,6 @@ statusCode=$(echo "$response" | tail -n 1)
 
 interpretStatus "$statusCode" "PUT /product"
 
-# DELETE /product
-# DELETE a product
-statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $sessionToken" \
-    "$URL/product/$productId?customerId=$customerId")
-
-interpretStatus "$statusCode" "DELETE /product/{id}"
-
 # DELETE /product/category
 # DELETE a product category
 statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
@@ -353,24 +344,18 @@ interpretStatus "$statusCode" "DELETE /coupon/{id}"
 payload=$(cat <<EOF
 {
   "customerId": "$customerId",
-  "totalCost": 100.00,
+  "totalCost": 20.00,
   "currency": "PLN",
   "country": "PL",
   "city": "Warszawa",
   "postalCode": "00-902",
   "address": "ul. Wiejska 4",
   "basket": {
-    "test-id": {
-      "price":    50,
+    "$productId": {
+      "price":    20,
       "currency": "PLN",
       "quantity": 1,
       "name":     "Product #0"
-    },
-    "test-id-1": {
-      "price":    50,
-      "currency": "PLN",
-      "quantity": 1,
-      "name":     "Product #1"
     }
   }
 }
@@ -404,7 +389,7 @@ payload=$(cat <<EOF
 {
   "id": "$orderId",
   "customerId": "$customerId",
-  "totalCost": 100.00,
+  "totalCost": 20.00,
   "currency": "PLN",
   "country": "PL",
   "city": "Warszawa",
@@ -412,17 +397,11 @@ payload=$(cat <<EOF
   "address": "ul. Wiejska 4",
   "status": "paid",
   "basket": {
-    "test-id": {
-      "price":    50,
+    "$productId": {
+      "price":    20,
       "currency": "PLN",
       "quantity": 1,
       "name":     "Product #0"
-    },
-    "test-id-1": {
-      "price":    50,
-      "currency": "PLN",
-      "quantity": 1,
-      "name":     "Product #1"
     }
   }
 }
@@ -445,3 +424,12 @@ statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
     "$URL/order/$orderId?customerId=$customerId")
 
 interpretStatus "$statusCode" "DELETE /order/{id}"
+
+# DELETE /product
+# DELETE a product
+statusCode=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $sessionToken" \
+    "$URL/product/$productId?customerId=$customerId")
+
+interpretStatus "$statusCode" "DELETE /product/{id}"

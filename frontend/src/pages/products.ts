@@ -61,6 +61,11 @@ const Products: IProductView = {
   },
   updateCategory: (category: ICategory): void => {
     API.updateCategory(category)
+      .then((res) => {})
+      .then(() => {
+        m.redraw()
+      })
+      .catch((err) => {})
   },
   deleteCategory: (id: string): void => {
     API.deleteCategory(id)

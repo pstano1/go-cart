@@ -169,15 +169,17 @@ func (a *InstanceAPI) CreateOrder(request *pkg.OrderCreate) (*string, error) {
 		if err != nil || len(product) == 0 {
 			return nil, pkg.ErrInvalidBasketValue
 		}
-		prices := make(map[string]float32)
-		if err := product[0].Prices.Scan(&prices); err != nil {
-			return nil, err
-		}
-		productSummary, ok := value.(pkg.ProductSummary)
+		summaryMap, ok := value.(map[string]interface{})
 		if !ok {
 			return nil, pkg.ErrInvalidBasketValue
 		}
-		if productSummary.Price != prices[productSummary.Currency] {
+		productSummary := &pkg.ProductSummary{
+			Price:    float32(summaryMap["price"].(float64)),
+			Name:     summaryMap["name"].(string),
+			Currency: summaryMap["currency"].(string),
+			Quantity: int(summaryMap["quantity"].(float64)),
+		}
+		if productSummary.Price != float32(product[0].Prices[productSummary.Currency].(float64)) {
 			return nil, pkg.ErrInvalidBasketValue
 		}
 		total += productSummary.Price * float32(productSummary.Quantity)
@@ -186,6 +188,7 @@ func (a *InstanceAPI) CreateOrder(request *pkg.OrderCreate) (*string, error) {
 			CustomerId: request.CustomerId,
 		})
 		if len(coupons) != 0 && coupons[0].IsActive && err == nil {
+			print("here4")
 			if coupons[0].Unit == "percentage" {
 				total = total - (total * (float32(coupons[0].Amount) / 100))
 			} else {
@@ -194,6 +197,7 @@ func (a *InstanceAPI) CreateOrder(request *pkg.OrderCreate) (*string, error) {
 			}
 		}
 		if order.TotalCost != total {
+			print("here5")
 			return nil, pkg.ErrInvalidBasketValue
 		}
 	}

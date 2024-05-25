@@ -24,3 +24,14 @@ export interface ProductUpdate extends ProductCreate {
 export interface CategoryCreate {
   name: string
 }
+
+export interface CouponCreate {
+  promoCode: string
+  amount: number
+  unit: string
+}
+
+export interface CouponUpdate extends CouponCreate {
+  id: string
+  isActive: boolean
+}

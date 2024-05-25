@@ -21,7 +21,9 @@ export interface ICategory {
 }
 
 export interface ICoupon {
+  id: string
   promoCode: string
   amount: number
   unit: string
+  isActive: boolean
 }
