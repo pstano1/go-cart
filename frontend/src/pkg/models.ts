@@ -27,3 +27,26 @@ export interface ICoupon {
   unit: string
   isActive: boolean
 }
+
+export interface IBasketEntry {
+  name: string
+  quantity: number
+  currency: string
+  price: string
+}
+
+export interface IOrder {
+  id: string
+  customerId: string
+  totalCost: number
+  currency: string
+  country: string
+  city: string
+  postalCode: string
+  address: string
+  status: string
+  basket: {
+    [key: string]: IBasketEntry
+  }
+  taxId?: string
+}

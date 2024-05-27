@@ -2,7 +2,7 @@
 
 # Adjust those variables before runnning the script
 username="admin"
-password="Admin1234mat@"
+password=""
 URL="http://localhost:8000/api"
 
 customerTag="dev"

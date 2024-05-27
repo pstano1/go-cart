@@ -8,6 +8,8 @@ import Products from './pages/products'
 import Product from './pages/product'
 import Coupons from './pages/coupons'
 import CreateProduct from './pages/createProduct'
+import Orders from './pages/orders'
+import Order from './pages/order'
 
 // layout
 import Layout from './components/layout'
@@ -36,6 +38,16 @@ m.route(document.body, '/signin', {
   '/coupons': {
     render: () => {
       return m(RequireAuth, m(Layout, { contentComponent: Coupons }))
+    },
+  },
+  '/orders': {
+    render: () => {
+      return m(RequireAuth, m(Layout, { contentComponent: Orders }))
+    },
+  },
+  '/orders/:id': {
+    render: () => {
+      return m(RequireAuth, m(Layout, { contentComponent: Order }))
     },
   },
   '/signin': {

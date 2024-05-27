@@ -14,7 +14,7 @@
   - [ ] style;
   - [ ] add manuals;
   - [ ] add employees UI;
-  - [ ] add coupons UI;
+  - [x] add coupons UI;
   - [ ] add orders UI;
   - [ ] translations;
   - [ ] handle errors;

@@ -12,7 +12,7 @@ import {
   CouponCreate,
   CouponUpdate,
 } from './pkg/requests'
-import { ICategory, ICoupon, IProduct } from './pkg/models'
+import { ICategory, ICoupon, IOrder, IProduct } from './pkg/models'
 
 interface IAPI {
   signUserIn(credentials: Credentials): Promise<AxiosResponse<any>>
@@ -28,6 +28,7 @@ interface IAPI {
   updateCoupon(coupon: CouponUpdate): Promise<AxiosResponse<void>>
   deleteCoupon(id: string): Promise<AxiosResponse<void>>
   createCoupon(coupon: CouponCreate): Promise<AxiosResponse<string>>
+  getOrders(id?: string): Promise<AxiosResponse<IOrder[]>>
 }
 
 class API implements IAPI {
@@ -156,6 +157,15 @@ class API implements IAPI {
   public async createCoupon(coupon: CouponCreate): Promise<AxiosResponse<string>> {
     return this.injectSessionToken((mergedConfig) =>
       this.instance.post('/coupon', coupon, mergedConfig),
+    )()
+  }
+
+  public async getOrders(id?: string): Promise<AxiosResponse<IOrder[]>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.get('/order', {
+        ...mergedConfig,
+        ...(id && { id }),
+      }),
     )()
   }
 
