@@ -15,6 +15,9 @@ func (a *InstanceAPI) ExchangeTagForId(tag string) (*pb.ExchangeTagForIdResponse
 
 func (a *InstanceAPI) ValidateCustomerId(id string) (bool, error) {
 	res, err := a.customerService.ValidateId(id)
+	if err != nil {
+		return false, err
+	}
 	return res.Ok, err
 }
 

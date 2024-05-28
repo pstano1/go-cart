@@ -29,6 +29,7 @@ interface IAPI {
   deleteCoupon(id: string): Promise<AxiosResponse<void>>
   createCoupon(coupon: CouponCreate): Promise<AxiosResponse<string>>
   getOrders(id?: string): Promise<AxiosResponse<IOrder[]>>
+  updateOrder(order: IOrder): Promise<AxiosResponse<void>>
 }
 
 class API implements IAPI {
@@ -166,6 +167,12 @@ class API implements IAPI {
         ...mergedConfig,
         ...(id && { id }),
       }),
+    )()
+  }
+
+  public async updateOrder(order: IOrder): Promise<AxiosResponse<void>> {
+    return this.injectSessionToken((mergedConfig) =>
+      this.instance.put('/order', order, mergedConfig),
     )()
   }
 

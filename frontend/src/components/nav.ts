@@ -9,6 +9,7 @@ interface INav extends m.Component {
 const Nav: INav = {
   signOut: (): void => {
     localStorage.setItem('sessionToken', null)
+    Nav.isUserMenuOpen = false
     m.route.set('/signin')
   },
   view: () => {
