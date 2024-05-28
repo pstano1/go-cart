@@ -1,30 +1,37 @@
 import m from 'mithril'
 import API from '../api'
 import { ProductCreate } from '../pkg/requests'
+import { ICategory } from '../pkg/models'
 
 interface ICreateProductView extends m.Component {
   languages: string[]
   currencies: string[]
+  categories: ICategory[]
   addToLanguages: (languague: string) => void
   addToCurrencies: (currency: string) => void
   handleSubmit: (event: Event) => void
+  fetchCategories: () => void
 }
 
 const CreateProduct: ICreateProductView = {
+  oncreate: (): void => {
+    CreateProduct.fetchCategories()
+  },
   handleSubmit: (event: Event): void => {
     event.preventDefault()
 
     const formData = new FormData(event.target as HTMLFormElement)
     let newProduct: ProductCreate = {
       names: {},
-      categories: ['test', 'test1', 'test2', 'broad-category', 'test3'],
+      categories: [],
       descriptions: {},
       prices: {},
     }
-
     for (let [key, value] of formData.entries()) {
       if (key === 'categories') {
-        // pass
+        const categorySelect = document.getElementById('category-select') as HTMLSelectElement
+        const selectedOptions = Array.from(categorySelect.selectedOptions)
+        newProduct.categories = selectedOptions.map((option) => option.value)
       }
       if (key.includes('description')) {
         key = key.replace('description-', '')
@@ -61,6 +68,15 @@ const CreateProduct: ICreateProductView = {
     }
     CreateProduct.currencies.push(currency.toUpperCase())
     m.redraw()
+  },
+  fetchCategories: (): void => {
+    API.getCategories()
+      .then((res) => res.data)
+      .then((res) => {
+        CreateProduct.categories = res
+        m.redraw()
+      })
+      .catch((err) => {})
   },
   view: () => {
     return m('main', [
@@ -118,7 +134,20 @@ const CreateProduct: ICreateProductView = {
             ]),
           ),
           m('label', { className: 'text-lg text-bolder' }, 'Categories'),
-          m('select', { className: 'shadow block my-4 text-lg w-full py-3 px-2 rounded' }),
+          m(
+            'select',
+            {
+              id: 'category-select',
+              multiple: true,
+              name: 'categories',
+              className: 'shadow block my-4 text-lg w-full py-3 px-2 rounded',
+            },
+            [
+              CreateProduct.categories?.map((category) =>
+                m('option', { value: category.name }, category.name),
+              ),
+            ],
+          ),
           m('label', { className: 'text-lg text-bolder' }, 'Description'),
           m(
             'div',
@@ -186,6 +215,7 @@ const CreateProduct: ICreateProductView = {
   },
   languages: [],
   currencies: [],
+  categories: [],
 }
 
 export default CreateProduct
