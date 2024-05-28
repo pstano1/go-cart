@@ -32,7 +32,7 @@ const Nav: INav = {
         Nav.isUserMenuOpen &&
           m(
             'div',
-            { className: 'absolute bg-white rounded-lg shadow py-3 right-1 w-24' },
+            { className: 'absolute bg-white rounded-lg shadow py-3 right-1 w-24 z-50' },
             m('ul', [
               m(
                 'li',

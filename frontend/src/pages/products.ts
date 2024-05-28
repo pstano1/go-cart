@@ -77,7 +77,7 @@ const Products: IProductView = {
   },
   view: () => {
     return m('main', [
-      m('nav', { className: 'flex p-4 shadow gap-4 mb-2 rounded sticky top-2 bg-white z-999' }, [
+      m('nav', { className: 'flex p-4 shadow gap-4 mb-2 rounded sticky top-2 bg-white z-49' }, [
         m(
           'a',
           {

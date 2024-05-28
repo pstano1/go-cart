@@ -10,7 +10,7 @@
 ### TO-DO:
 
 - frontend:
-  - [ ] refresh token when expiry is near;
+  - [x] refresh token when expiry is near;
   - [ ] style;
   - [ ] add manuals;
   - [ ] add employees UI;

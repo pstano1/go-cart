@@ -31,7 +31,10 @@ const signIn: ISignInView = {
       .then((res: AxiosResponse<ISignInResponse>) => res.data)
       .then((data: ISignInResponse) => {
         localStorage.setItem('sessionToken', data.sessionToken)
-        // localStorage.setItem('permissons', data.permissions.join(','))
+        localStorage.setItem('permissons', data.permissions.join(','))
+        const now = new Date()
+        now.setTime(now.getTime() + 60 * 60 * 1000)
+        localStorage.setItem('expiresAt', now.toISOString())
       })
       .then(() => {
         m.route.set('/')

@@ -13,6 +13,7 @@ import {
   CouponUpdate,
 } from './pkg/requests'
 import { ICategory, ICoupon, IOrder, IProduct } from './pkg/models'
+import { ISignInResponse } from './auth/models'
 
 interface IAPI {
   signUserIn(credentials: Credentials): Promise<AxiosResponse<any>>
@@ -68,6 +69,19 @@ class API implements IAPI {
     requestFn: (config: AxiosRequestConfig) => Promise<AxiosResponse<T>>,
   ): () => Promise<AxiosResponse<T>> {
     const sessionToken: string = localStorage.getItem('sessionToken')
+    const expiresAt: Date = new Date(localStorage.getItem('expiresAt'))
+    const now = new Date()
+
+    const timeDifference: number = expiresAt.getTime() - now.getTime()
+    if (timeDifference < 10 * 60 * 1000) {
+      this.injectSessionToken((mergedConfig) => this.instance.post('/user/refresh', mergedConfig))()
+        .then((res) => res.data)
+        .then((res: ISignInResponse) => {
+          localStorage.setItem('sessionToken', res.sessionToken)
+          now.setTime(now.getTime() + 60 * 60 * 1000)
+          localStorage.setItem('expiresAt', now.toISOString())
+        })
+    }
 
     return async () => {
       const config: AxiosRequestConfig = {}
