@@ -16,7 +16,7 @@
   - [ ] add employees UI;
   - [x] add coupons UI;
   - [ ] add orders UI;
-  - [ ] translations;
+  - [x] translations;
   - [ ] handle errors;
   - [ ] add loaders;
   - [ ] validation;

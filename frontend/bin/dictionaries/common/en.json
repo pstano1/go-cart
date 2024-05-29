@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "products": "Products",
+    "coupons": "Coupons",
+    "orders": "Orders",
+    "signOut": "Sign out"
+  },
+  "signIn": "Sign in"
+}

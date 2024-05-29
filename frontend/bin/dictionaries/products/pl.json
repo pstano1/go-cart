@@ -1,0 +1,19 @@
+{
+  "subnav": {
+    "products": "Produkty",
+    "categories": "Kategorie"
+  },
+  "more": "Więcej",
+  "name": "Nazwa",
+  "actions": "Opcje",
+  "detailPageTitle": "Podsumowanie produktu",
+  "createPageTitle": "Dodaj nowy produkt",
+  "languages": "Języki",
+  "add": "Dodaj",
+  "description": "Opis",
+  "price": "Cena",
+  "update": "Aktualizuj",
+  "delete": "Usuń",
+  "categories": "Kategorie",
+  "save": "Zapisz"
+}

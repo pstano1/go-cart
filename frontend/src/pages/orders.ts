@@ -1,5 +1,6 @@
 import m from 'mithril'
 import API from '../api'
+import { t } from 'i18next'
 import { IOrder } from '../pkg/models'
 import InfoIcon from '../../bin/images/icons/info.svg'
 
@@ -28,8 +29,8 @@ const Orders: IOrdersView = {
         m('thead', [
           m('tr', [
             m('th', { className: 'py-2' }, 'Id'),
-            m('th', { className: 'py-2' }, 'Status'),
-            m('th', { className: 'py-2' }, 'Actions'),
+            m('th', { className: 'py-2' }, t('Orders:status')),
+            m('th', { className: 'py-2' }, t('Orders:actions')),
           ]),
         ]),
         m(

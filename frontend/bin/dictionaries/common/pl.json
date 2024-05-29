@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "products": "Produkty",
+    "coupons": "Kupony",
+    "orders": "Zamówienia",
+    "signOut": "Wyloguj się"
+  },
+  "signIn": "Zaloguj się"
+}

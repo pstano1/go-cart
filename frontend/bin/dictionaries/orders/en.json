@@ -1,0 +1,20 @@
+{
+  "status": "Status",
+  "actions": "Actions",
+  "statuses": {
+    "placed": "Order placed",
+    "cancelled": "Cancelled",
+    "paid": "Order paid",
+    "being-prepared": "Being prepared",
+    "sent": "Sent"
+  },
+  "cost": "Cost",
+  "city": "City",
+  "country": "Country",
+  "postalCode": "Postal code",
+  "address": "Address",
+  "name": "Name",
+  "price": "Price",
+  "quantity": "Quantity",
+  "save": "Save"
+}

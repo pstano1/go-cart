@@ -1,5 +1,6 @@
 import m from 'mithril'
 import API from '../api'
+import { t } from 'i18next'
 import { ICoupon } from '../pkg/models'
 import { CouponCreate, CouponUpdate } from '../pkg/requests'
 
@@ -85,10 +86,10 @@ const Coupons: ICouponsView = {
       m('table', { className: 'border-collapse shadow w-full' }, [
         m('thead', [
           m('tr', [
-            m('th', { className: 'py-2' }, 'Code'),
-            m('th', { className: 'py-2' }, 'Amount'),
-            m('th', { className: 'py-2' }, 'Unit'),
-            m('th', { className: 'py-2' }, 'Actions'),
+            m('th', { className: 'py-2' }, t('Coupons:code')),
+            m('th', { className: 'py-2' }, t('Coupons:amount')),
+            m('th', { className: 'py-2' }, t('Coupons:unit')),
+            m('th', { className: 'py-2' }, t('Coupons:actions')),
           ]),
         ]),
         m('tbody', [

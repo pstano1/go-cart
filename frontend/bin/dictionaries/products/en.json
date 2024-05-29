@@ -1,0 +1,19 @@
+{
+  "subnav": {
+    "products": "Products",
+    "categories": "Categories"
+  },
+  "more": "More",
+  "name": "Name",
+  "actions": "Actions",
+  "detailPageTitle": "Product overview",
+  "createPageTitle": "Add a new product",
+  "languages": "Languages",
+  "add": "Add",
+  "description": "Description",
+  "price": "Price",
+  "update": "Update",
+  "delete": "Delete",
+  "categories": "Categories",
+  "save": "Save"
+}

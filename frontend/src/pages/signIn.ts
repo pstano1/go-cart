@@ -2,6 +2,7 @@ import m from 'mithril'
 import { AxiosResponse } from 'axios'
 import { ISignInResponse } from '../auth/models'
 import API from '../api'
+import { t } from 'i18next'
 import { Credentials } from '../pkg/requests'
 
 interface ISignInView extends m.Component {
@@ -54,7 +55,11 @@ const signIn: ISignInView = {
           onsubmit: (event: Event) => signIn.handleSubmit(event),
           class: 'bg-antiflashWhite p-16 rounded-lg shadow-md',
         },
-        m('h1', { class: 'uppercase text-lg font-semibold text-midnightGreen' }, 'Sign In'),
+        m(
+          'h1',
+          { class: 'uppercase text-lg font-semibold text-midnightGreen' },
+          t('Common:signIn'),
+        ),
         m('input', {
           class:
             'w-full p-2 mt-2 mb-2 focus:outline-none bg-antiflashWhite border-b-2 border-black focus:border-midnightGreen',
@@ -73,7 +78,7 @@ const signIn: ISignInView = {
             type: 'submit',
             class: 'bg-midnightGreen text-antiflashWhite w-full rounded-lg p-2 mt-2 uppercase',
           },
-          'sign in',
+          t('Common:signIn'),
         ),
       ),
     )

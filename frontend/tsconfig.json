@@ -1,26 +1,17 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "target": "es6",
-        "lib": [
-            "es6",
-            "dom",
-            "dom.iterable",
-            "es2017"
-        ],
-        "module": "commonjs",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "skipLibCheck": true,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "esModuleInterop": true
-    },
-    "include": [
-        "src/*",
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
-    ]
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "es6",
+    "lib": ["es6", "dom", "dom.iterable", "es2017"],
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "skipLibCheck": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

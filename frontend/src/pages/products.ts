@@ -1,5 +1,6 @@
 import m from 'mithril'
 import API from '../api'
+import { t } from 'i18next'
 import { ICategory, IProduct } from '../pkg/models'
 
 import AddIcon from '../../bin/images/icons/plus.svg'
@@ -93,7 +94,7 @@ const Products: IProductView = {
               }
             },
           },
-          'products',
+          t('Products:subnav.products'),
         ),
         m(
           'a',
@@ -110,7 +111,7 @@ const Products: IProductView = {
               }
             },
           },
-          'categories',
+          t('Products:subnav.categories'),
         ),
       ]),
       m(
@@ -158,7 +159,7 @@ const Products: IProductView = {
                     'bg-midnightGreen text-antiflashWhite px-3 py-1 rounded capitalize cursor-pointer mx-auto block w-fit my-2',
                   href: `/products/${product.id}`,
                 },
-                'more',
+                t('Products:more'),
               ),
             ]),
           ),
@@ -179,8 +180,8 @@ const Products: IProductView = {
           m(
             'thead',
             m('tr', [
-              m('th', { className: 'py-2' }, 'Name'),
-              m('th', { className: 'py-2' }, 'Actions'),
+              m('th', { className: 'py-2' }, t('Products:name')),
+              m('th', { className: 'py-2' }, t('Products:actions')),
             ]),
           ),
           m('tbody', [

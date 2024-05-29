@@ -1,5 +1,6 @@
 import m from 'mithril'
 import API from '../api'
+import { t } from 'i18next'
 import { IOrder } from '../pkg/models'
 
 interface IOrderView extends m.Component {
@@ -41,16 +42,22 @@ const Order: IOrderView = {
           m('h3', Order.order.id),
           m('table', { className: 'w-full my-5 shadow rounded' }, [
             m('tr', { className: 'py-3' }, [
-              m('th', 'Cost'),
+              m('th', t('Orders:cost')),
               m('td', `${Order.order.currency} ${Order.order.totalCost}`),
             ]),
-            m('tr', { className: 'py-3' }, [m('th', 'City'), m('td', Order.order.city)]),
-            m('tr', { className: 'py-3' }, [m('th', 'Country'), m('td', Order.order.country)]),
+            m('tr', { className: 'py-3' }, [m('th', t('Orders:city')), m('td', Order.order.city)]),
+            m('tr', { className: 'py-3' }, [
+              m('th', t('Orders:country')),
+              m('td', Order.order.country),
+            ]),
             m('tr', { className: 'py-3' }, [
               m('th', 'Postal code'),
               m('td', Order.order.postalCode),
             ]),
-            m('tr', { className: 'py-3' }, [m('th', 'Address'), m('td', Order.order.address)]),
+            m('tr', { className: 'py-3' }, [
+              m('th', t('Orders:address')),
+              m('td', Order.order.address),
+            ]),
           ]),
           m(
             'select',
@@ -61,17 +68,22 @@ const Order: IOrderView = {
               },
             },
             [
-              m('option', 'placed'),
-              m('option', 'paid'),
-              m('option', 'being-prepered'),
-              m('option', 'sent'),
+              m('option', { value: 'placed' }, t('Orders:statuses.placed')),
+              m('option', { value: 'cancelled' }, t('Orders:statuses.cancelled')),
+              m('option', { value: 'paid' }, t('Orders:statuses.paid')),
+              m('option', { value: 'being-prepared' }, t('Orders:statuses.being-prepared')),
+              m('option', { value: 'sent' }, t('Orders:statuses.sent')),
             ],
           ),
           m('table', { className: 'w-full my-5 shadow rounded' }, [
             m(
               'thead',
               { className: 'bg-midnightGreen text-antiflashWhite rounded-t' },
-              m('tr', [m('th', 'Name'), m('th', 'Price'), m('th', 'Quantity')]),
+              m('tr', [
+                m('th', t('Orders:name')),
+                m('th', t('Orders:price')),
+                m('th', t('Orders:quantity')),
+              ]),
             ),
             m('tbody', [
               Object.entries(Order.order.basket).map(([_, value]) =>
@@ -83,7 +95,7 @@ const Order: IOrderView = {
               ),
             ]),
           ]),
-          m('button', { onclick: () => Order.updateOrder() }, 'save'),
+          m('button', { onclick: () => Order.updateOrder() }, t('Orders:save')),
         ]
       : null,
     )

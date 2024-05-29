@@ -1,4 +1,5 @@
 import m from 'mithril'
+import './i18n'
 import RequireAuth from './auth/RequireAuth'
 
 // views

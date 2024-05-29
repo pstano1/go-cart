@@ -1,5 +1,6 @@
 import m from 'mithril'
 import API from '../api'
+import { t } from 'i18next'
 import { IProduct } from '../pkg/models'
 import { ProductUpdate } from '../pkg/requests'
 
@@ -93,9 +94,9 @@ const Product: IProductView = {
   view: () => {
     return m('main', [
       m('section', { className: 'w-1/2' }, [
-        m('h2', { className: 'text-2xl' }, 'Product overview'),
+        m('h2', { className: 'text-2xl' }, t('Products:detailPageTitle')),
         m('div', { className: 'block w-1/2 h-fit' }, [
-          m('label', { className: 'text-lg text-bolder block' }, 'Languages'),
+          m('label', { className: 'text-lg text-bolder block' }, t('Products:languages')),
           m(
             'div',
             { className: 'flex gap-1' },
@@ -127,7 +128,7 @@ const Product: IProductView = {
               className:
                 'bg-midnightGreen text-antiflashWhite px-3 py-1 rounded capitalize cursor-pointer mx-auto inline-block w-fit mx-2 h-full',
             },
-            'add',
+            t('Products:add'),
           ),
         ]),
         m('form', { className: 'block h-fit', name: 'product', onsubmit: Product.handleSubmit }, [
@@ -142,7 +143,7 @@ const Product: IProductView = {
               }),
             ]),
           ),
-          m('label', { className: 'text-lg text-bolder' }, 'Description'),
+          m('label', { className: 'text-lg text-bolder' }, t('Products:description')),
           m(
             'div',
             Product.languages?.map((language) => [
@@ -155,7 +156,7 @@ const Product: IProductView = {
               }),
             ]),
           ),
-          m('label', { className: 'text-lg text-bolder' }, 'Price'),
+          m('label', { className: 'text-lg text-bolder' }, t('Products:price')),
           m('div', { className: 'block w-1/2 h-fit' }, [
             m('input', {
               id: 'currencyField',
@@ -177,7 +178,7 @@ const Product: IProductView = {
                 className:
                   'bg-midnightGreen text-antiflashWhite px-3 py-1 rounded capitalize cursor-pointer mx-auto inline-block w-fit mx-2 h-full',
               },
-              'add',
+              t('Products:add'),
             ),
           ]),
           m(
@@ -199,7 +200,7 @@ const Product: IProductView = {
               className:
                 'bg-midnightGreen text-antiflashWhite px-3 py-1 rounded capitalize cursor-pointer mx-auto block w-fit my-2',
             },
-            'update',
+            t('Products:update'),
           ),
         ]),
         m(
@@ -219,7 +220,7 @@ const Product: IProductView = {
                 })
             },
           },
-          'delete',
+          t('Products:delete'),
         ),
       ]),
     ])

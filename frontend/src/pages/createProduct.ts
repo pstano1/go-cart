@@ -1,5 +1,6 @@
 import m from 'mithril'
 import API from '../api'
+import { t } from 'i18next'
 import { ProductCreate } from '../pkg/requests'
 import { ICategory } from '../pkg/models'
 
@@ -80,9 +81,9 @@ const CreateProduct: ICreateProductView = {
   },
   view: () => {
     return m('main', [
-      m('h2', { className: 'text-2xl' }, 'Add a new product'),
+      m('h2', { className: 'text-2xl' }, t('Products:createPageTitle')),
       m('div', { className: 'block w-1/2 h-fit' }, [
-        m('label', { className: 'text-lg text-bolder block' }, 'Languages'),
+        m('label', { className: 'text-lg text-bolder block' }, t('Products:languages')),
         m(
           'div',
           { className: 'flex gap-1' },
@@ -111,7 +112,7 @@ const CreateProduct: ICreateProductView = {
             className:
               'bg-midnightGreen text-antiflashWhite px-3 py-1 rounded capitalize cursor-pointer mx-auto inline-block w-fit mx-2 h-full',
           },
-          'add',
+          t('Products:add'),
         ),
       ]),
       m(
@@ -122,7 +123,7 @@ const CreateProduct: ICreateProductView = {
           className: 'block w-1/2',
         },
         [
-          m('label', { className: 'text-lg text-bolder' }, 'Name'),
+          m('label', { className: 'text-lg text-bolder' }, t('Products:name')),
           m(
             'div',
             CreateProduct.languages?.map((language) => [
@@ -133,7 +134,7 @@ const CreateProduct: ICreateProductView = {
               }),
             ]),
           ),
-          m('label', { className: 'text-lg text-bolder' }, 'Categories'),
+          m('label', { className: 'text-lg text-bolder' }, t('Products:categories')),
           m(
             'select',
             {
@@ -148,7 +149,7 @@ const CreateProduct: ICreateProductView = {
               ),
             ],
           ),
-          m('label', { className: 'text-lg text-bolder' }, 'Description'),
+          m('label', { className: 'text-lg text-bolder' }, t('Products:description')),
           m(
             'div',
             CreateProduct.languages.map((language) => [
@@ -160,7 +161,7 @@ const CreateProduct: ICreateProductView = {
               }),
             ]),
           ),
-          m('label', { className: 'text-lg text-bolder' }, 'Price'),
+          m('label', { className: 'text-lg text-bolder' }, t('Products:price')),
           m('div', { className: 'block w-1/2 h-fit' }, [
             m('input', {
               id: 'currencyField',
@@ -181,7 +182,7 @@ const CreateProduct: ICreateProductView = {
                 className:
                   'bg-midnightGreen text-antiflashWhite px-3 py-1 rounded capitalize cursor-pointer mx-auto inline-block w-fit mx-2 h-full',
               },
-              'add',
+              t('Products:add'),
             ),
           ]),
           m(
@@ -207,7 +208,7 @@ const CreateProduct: ICreateProductView = {
               className:
                 'bg-midnightGreen text-antiflashWhite px-3 py-1 rounded capitalize cursor-pointer mx-auto block w-fit my-2',
             },
-            'save',
+            t('Products:save'),
           ),
         ],
       ),

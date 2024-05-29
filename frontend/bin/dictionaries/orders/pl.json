@@ -1,0 +1,20 @@
+{
+  "status": "Status",
+  "actions": "Opcje",
+  "statuses": {
+    "placed": "Złożone",
+    "cancelled": "Anulowane",
+    "paid": "Opłacone",
+    "being-prepared": "W przygotowaniu",
+    "sent": "Wysłane"
+  },
+  "cost": "Koszt",
+  "city": "Miasto",
+  "country": "Państwo",
+  "postalCode": "Kod pocztowy",
+  "address": "Adres",
+  "name": "Nazwa",
+  "price": "Cena",
+  "quantity": "Ilość",
+  "save": "Zapisz"
+}

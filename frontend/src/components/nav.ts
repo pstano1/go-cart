@@ -1,4 +1,5 @@
 import m from 'mithril'
+import { t } from 'i18next'
 import UserIcon from '../../bin/images/icons/user.svg'
 
 interface INav extends m.Component {
@@ -15,9 +16,21 @@ const Nav: INav = {
   view: () => {
     return m('nav', { class: 'flex p-4 shadow gap-4 items-center' }, [
       m('div', { class: 'flex-1' }),
-      m('a', { href: '#!/products', class: 'cursor-pointer text-lg capitalize' }, 'products'),
-      m('a', { href: '#!/coupons', class: 'cursor-pointer text-lg capitalize' }, 'coupons'),
-      m('a', { href: '#!/orders', class: 'cursor-pointer text-lg capitalize' }, 'orders'),
+      m(
+        'a',
+        { href: '#!/products', class: 'cursor-pointer text-lg capitalize' },
+        t('Common:nav.products'),
+      ),
+      m(
+        'a',
+        { href: '#!/coupons', class: 'cursor-pointer text-lg capitalize' },
+        t('Common:nav.coupons'),
+      ),
+      m(
+        'a',
+        { href: '#!/orders', class: 'cursor-pointer text-lg capitalize' },
+        t('Common:nav.orders'),
+      ),
       m('div', { className: 'relative' }, [
         m(
           'div',
@@ -32,12 +45,12 @@ const Nav: INav = {
         Nav.isUserMenuOpen &&
           m(
             'div',
-            { className: 'absolute bg-white rounded-lg shadow py-3 right-1 w-24 z-50' },
+            { className: 'absolute bg-white rounded-lg shadow py-3 right-1 w-36 z-50' },
             m('ul', [
               m(
                 'li',
                 { className: 'cursor-pointer py-2 px-4 hover:bg-azure', onclick: Nav.signOut },
-                'Sign out',
+                t('Common:nav.signOut'),
               ),
             ]),
           ),
