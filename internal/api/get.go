@@ -1,3 +1,5 @@
+// Package api provides a logic for the application
+// This file contains definitions of get methods
 package api
 
 import (

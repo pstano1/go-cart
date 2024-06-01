@@ -1,3 +1,5 @@
+// Package api provides a logic for the application
+// This file contains functions responsible for authentication process
 package api
 
 import (
@@ -18,6 +20,7 @@ const (
 	bearerToken = "Bearer"
 )
 
+// JWTConfig is a token definition
 type JWTConfig struct {
 	Username       string    `json:"username"`
 	User           *pkg.User `json:"user"`
@@ -32,6 +35,7 @@ func (c JWTConfig) Valid() error {
 	return nil
 }
 
+// generateJWT generates a JWT token from porvided config
 func (a *InstanceAPI) generateJWT(conf *JWTConfig) (string, error) {
 	token := gojwt.New(gojwt.SigningMethodHS256)
 	token.Claims = conf

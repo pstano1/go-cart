@@ -27,7 +27,7 @@
   - [x] permissions;
   - [ ] tests;
   - [x] errors;
-  - [ ] add goDoc comments;
+  - [x] add goDoc comments;
   - [ ] images storage;
   - [x] add price history;
   - [x] payment processing (stripe);

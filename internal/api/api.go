@@ -1,3 +1,5 @@
+// Package api provides a logic for the application
+// This file contains definition & some helper functions
 package api
 
 import (
@@ -40,6 +42,7 @@ type InstanceAPI struct {
 	secretKey        string
 }
 
+// GetHash generates hash from given password
 func getHash(password []byte) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.MinCost)
 	if err != nil {
@@ -48,6 +51,9 @@ func getHash(password []byte) (string, error) {
 	return string(hash), nil
 }
 
+// isValidPrice checks generic interface{} if it's a valid price
+// following the pattern of being a string, number pair
+// where string is 3 characters long
 func isValidPrice(key string, value interface{}) bool {
 	regex := regexp.MustCompile(`^[A-Z]{3}$`)
 	if !regex.MatchString(key) {
@@ -66,6 +72,9 @@ func isValidPrice(key string, value interface{}) bool {
 	}
 }
 
+// isValidNameOrDescription checks generic interface{} if it's a valid name or description
+// following the pattern of being a string, string pair
+// where first string (a key) is 2 characters long
 func isValidNameOrDescription(key string, value interface{}) bool {
 	regex := regexp.MustCompile(`^[A-Z]{2}$`)
 	if !regex.MatchString(key) {
@@ -79,6 +88,8 @@ func isValidNameOrDescription(key string, value interface{}) bool {
 	return false
 }
 
+// isValidProductDescription is a helper function for `isValidbasketEntry`
+// checks if field is valid by checking for it matching criteria of type & length
 func isValidBasketProductDescription(key string, value interface{}) bool {
 	regex := regexp.MustCompile(`^[A-Z]{3}$`)
 	switch val := value.(type) {
@@ -93,6 +104,8 @@ func isValidBasketProductDescription(key string, value interface{}) bool {
 	}
 }
 
+// checks generic interface{} if it's a valid `pkg.ProductSummary` implementation
+// checks if interface{} contains all erquired fields & if type and length are valid
 func isValidBasketEntry(key string, value interface{}) bool {
 	switch val := value.(type) {
 	case map[string]interface{}:
@@ -118,6 +131,7 @@ func isValidBasketEntry(key string, value interface{}) bool {
 	}
 }
 
+// FetchExchangeRates fetches all possible exhange rates from NBP
 func (a *InstanceAPI) FetchExchangeRates() error {
 	for _, name := range []string{"a", "b", "c"} {
 		if err := a.exchangeProvider.FetchNBPTable(name); err != nil {

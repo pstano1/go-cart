@@ -1,3 +1,5 @@
+// Package api provides a logic for the application
+// This file contains definitions of update methods
 package api
 
 import (
@@ -35,7 +37,6 @@ func (a *InstanceAPI) UpdateUser(request *pkg.UserUpdate) error {
 	return nil
 }
 
-// UpdateProduct updates products model with given data
 func (a *InstanceAPI) UpdateProduct(request *pkg.ProductUpdate) error {
 	a.log.Debug("updating product info",
 		zap.String("id", request.Id),
