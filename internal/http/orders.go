@@ -50,15 +50,13 @@ func (i *HTTPInstanceAPI) createOrder(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-	orderId, err := i.api.CreateOrder(request)
+	orderRes, err := i.api.CreateOrder(request)
 	if err != nil {
 		ctx.SetBodyString(err.Error())
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		return
 	}
-	response, err := json.Marshal(&pkg.ObjectCreateResponse{
-		Id: *orderId,
-	})
+	response, err := json.Marshal(orderRes)
 	if err != nil {
 		ctx.SetBodyString(err.Error())
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)

@@ -30,7 +30,7 @@
   - [ ] add goDoc comments;
   - [ ] images storage;
   - [x] add price history;
-  - [ ] payment processing (stripe);
+  - [x] payment processing (stripe);
   - [x] localized product names;
   - [x] BUG: server crashes when user doesn't have any permission;
   - [x] scrape exchange rates in 24h interval (API call in the end);
@@ -39,6 +39,7 @@
   - [x] add unit (percentage/currency) to coupon;
   - [ ] invoice/receipt generation (probably can be done by stripe);
   - [ ] mail sending;
+  - [ ] webhooks for changing status to paid when stripe gets payment;
 - other:
   - [x] swagger;
   - [ ] makefile;

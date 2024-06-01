@@ -9,6 +9,7 @@ import (
 	"github.com/pstano1/go-cart/internal/db"
 	"github.com/pstano1/go-cart/internal/http"
 	exchange "github.com/pstano1/go-cart/internal/pkg/exchangeProvider"
+	"github.com/pstano1/go-cart/internal/pkg/stripeProvider"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -26,6 +27,7 @@ const (
 	confOptDatabasePort           = "DATABASE_PORT"
 	confOptSecretKey              = "SECRET_KEY"
 	confOptCustomerServiceAddress = "CUSTOMER_SERVICE_ADDRESS"
+	confOptStripeKey              = "STRIPE_KEY"
 )
 
 func main() {
@@ -80,11 +82,14 @@ func createServerFromConfig(logger *zap.Logger) *http.HTTPInstanceAPI {
 
 	exchangeProvider := exchange.NewProvider(logger)
 
+	sp := stripeProvider.NewProvider(viper.GetString(confOptStripeKey), logger)
+
 	instanceAPI := api.NewInstanceAPI(&api.APIConfig{
 		Logger:           logger,
 		DBController:     dbController,
 		CustomerClient:   customerClient,
 		ExchangeProvider: exchangeProvider,
+		StripeProvider:   sp,
 		SecretKey:        viper.GetString(confOptSecretKey),
 	})
 

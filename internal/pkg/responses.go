@@ -9,3 +9,8 @@ type SignInResponse struct {
 type ObjectCreateResponse struct {
 	Id string `json:"id"`
 }
+
+type OrderCreateResponse struct {
+	Id          string `json:"id"`
+	CheckoutURL string `json:"checkoutURL"`
+}

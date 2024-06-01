@@ -6,6 +6,7 @@ import (
 	"github.com/pstano1/customer-api/client"
 	"github.com/pstano1/go-cart/internal/db"
 	exchange "github.com/pstano1/go-cart/internal/pkg/exchangeProvider"
+	"github.com/pstano1/go-cart/internal/pkg/stripeProvider"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,6 +17,7 @@ func NewInstanceAPI(conf *APIConfig) *InstanceAPI {
 		dbController:     conf.DBController,
 		customerService:  conf.CustomerClient,
 		exchangeProvider: conf.ExchangeProvider,
+		stripeProvider:   conf.StripeProvider,
 		secretKey:        conf.SecretKey,
 	}
 }
@@ -25,6 +27,7 @@ type APIConfig struct {
 	DBController     db.IDBController
 	CustomerClient   client.ICustomerServiceClient
 	ExchangeProvider exchange.IExchangeProvider
+	StripeProvider   stripeProvider.IStripeProvider
 	SecretKey        string
 }
 
@@ -33,6 +36,7 @@ type InstanceAPI struct {
 	dbController     db.IDBController
 	customerService  client.ICustomerServiceClient
 	exchangeProvider exchange.IExchangeProvider
+	stripeProvider   stripeProvider.IStripeProvider
 	secretKey        string
 }
 
