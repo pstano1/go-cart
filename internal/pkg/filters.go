@@ -1,3 +1,6 @@
+// Package pkg provides models & provider implementations for the application
+// This file contains `filters` - structs used for specifying conditions
+// for operations performed on models
 package pkg
 
 import (

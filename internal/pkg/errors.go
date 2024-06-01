@@ -1,3 +1,5 @@
+// Package pkg provides models & provider implementations for the application
+// this file contains errors definitions
 package pkg
 
 import "errors"

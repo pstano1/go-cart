@@ -1,3 +1,5 @@
+// Package pkg provides models & provider implementations for the application
+// This file contains models definitions for both DB models and other
 package pkg
 
 import (
@@ -10,6 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// JSONB is a type definition use for storing JSON data in DB
 type JSONB map[string]interface{}
 
 func (j JSONB) Value() (driver.Value, error) {
@@ -28,6 +31,7 @@ func (j *JSONB) Scan(value interface{}) error {
 	return json.Unmarshal(data, &j)
 }
 
+// CustomerSpecificModel indicates if the model should be assigned to a specific instance
 type CustomerSpecificModel struct {
 	CustomerId string `json:"customerId"`
 }

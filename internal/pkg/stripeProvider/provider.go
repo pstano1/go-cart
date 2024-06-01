@@ -1,3 +1,4 @@
+// Package stripeProvider provides a stripe client implementation
 package stripeProvider
 
 import (
@@ -25,6 +26,7 @@ func NewProvider(key string, logger *zap.Logger) IStripeProvider {
 	}
 }
 
+// CreatePayment creates a checkout session & returns URL to stipe payment window
 func (s *StripeProvider) CreatePayment(basket []pkg.ProductSummary) (string, error) {
 	items := make([]*stripe.CheckoutSessionLineItemParams, 0)
 	for _, product := range basket {
@@ -42,6 +44,7 @@ func (s *StripeProvider) CreatePayment(basket []pkg.ProductSummary) (string, err
 	}
 
 	params := &stripe.CheckoutSessionParams{
+		// TO-DO: change URL
 		SuccessURL: stripe.String("https://example.com/success"),
 		LineItems:  items,
 		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),

@@ -47,7 +47,6 @@
   - [ ] README.md;
   - [ ] dockerfile;
   - [ ] investigate dependabot's alerts;
-  - [ ] create a logo(?);
 
 ### Running locally
 

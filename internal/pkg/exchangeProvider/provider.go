@@ -1,3 +1,5 @@
+// Package exchange provides a client for interacting with NBP API
+// It allows for dynamic currency exchange
 package exchange
 
 import (
@@ -30,6 +32,8 @@ func NewProvider(logger *zap.Logger) IExchangeProvider {
 	}
 }
 
+// FetchNBPTable fetches current NBP exhcange rates for specified table
+// then parses them & stores in memory
 func (e *ExchangeProvider) FetchNBPTable(tableName string) error {
 	e.log.Debug("Pulling exchange rates from NBP table",
 		zap.String("table", tableName),
@@ -71,6 +75,8 @@ func (e *ExchangeProvider) FetchNBPTable(tableName string) error {
 	return nil
 }
 
+// GetExchangeRate returns exchnage rate for given currency pair
+// (given it's provided by NBP)
 func (e *ExchangeProvider) GetExchangeRate(from, to string) (float32, error) {
 	if to == "PLN" {
 		rate, ok := e.exchangeRates[from]

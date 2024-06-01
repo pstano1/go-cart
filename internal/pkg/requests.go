@@ -1,3 +1,5 @@
+// Package pkg provides models & provider implementations for the application
+// This file contains requests definitons for http service
 package pkg
 
 import "github.com/lib/pq"
@@ -94,7 +96,7 @@ type OrderUpdate struct {
 	TaxId      string  `json:"taxId"`
 }
 
-// ProductSummary is what's being stored
+// ProductSummary is what is being stored
 // as basket product in database
 type ProductSummary struct {
 	Price    float32 `json:"price"`

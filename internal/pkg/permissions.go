@@ -1,3 +1,5 @@
+// Package pkg provides models & provider implementations for the application
+// This file contains list of permissions used through the app
 package pkg
 
 const (
