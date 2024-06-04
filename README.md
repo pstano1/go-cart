@@ -1,11 +1,20 @@
 # go-cart
 
+This repository contains a setup for a multi-store application. It includes a REST API and a minimal yet fully functional frontend for store management. 
+
 ### Content
 
+- [Description & requirements](#description)
 - [TO-DO](#to-do)
 - [Running locally](#running-locally)
 - [Scripts](#scripts)
 - [Licence](#licence)
+
+### Description
+
+To enable this API, a gRPC service is required. The goal is for the application to host multiple stores using shared resources. To achieve this, the API leverages another application that provides utilities connected to customers. A simple implementation used during development can be found [here](https://github.com/pstano1/customer-api).
+
+![basic-api-schema](https://github.com/pstano1/diagrams/blob/trunk/pkg/diagrams/go-cart/assets/customerAPISchema.png?raw=true)
 
 ### TO-DO:
 
@@ -84,3 +93,5 @@ go run ./scripts/manage.go <flag>
 ```
 
 ### Licence
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT)
