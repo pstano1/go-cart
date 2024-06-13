@@ -31,6 +31,7 @@ var (
 	ErrCreatingOrder                = errors.New("ERROR-CREATING-ORDER")
 	ErrInvalidBasketValue           = errors.New("ERROR-INVALID-BASKET-VALUE")
 	ErrInvalidNameKeyOrValue        = errors.New("ERROR-INVALID-NAME")
+	ErrPassowordsDontMatch          = errors.New("ERROR-PASSWORDS-DONT-MATCH")
 
 	// errors not send to the end user
 	ErrStatusNotOK              = errors.New("received status different than 200")

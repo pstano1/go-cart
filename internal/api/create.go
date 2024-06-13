@@ -23,7 +23,9 @@ func (a *InstanceAPI) CreateUser(request *pkg.UserCreate) (*string, error) {
 		)
 		return nil, err
 	}
-	user.Password = request.PasswordCheck
+	if user.Password != request.PasswordCheck {
+		return nil, pkg.ErrPassowordsDontMatch
+	}
 	users, err := a.dbController.GetUsers(&pkg.UserFilter{
 		Username: user.Username,
 	})

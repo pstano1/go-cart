@@ -24,5 +24,6 @@
     "ERROR-UPDATING-ORDER": "Podczas aktualizowania zamówienia wystąpił błąd",
     "ERROR-CREATING-ORDER": "Podczas składania zamówienia wystąpił błąd",
     "ERROR-INVALID-BASKET-VALUE": "Niepoprawna wartość wewnątrz koszyka",
-    "ERROR-INVALID-NAME": "Niepoprawny klucz bądź wartość dla nazwy produktu"
+    "ERROR-INVALID-NAME": "Niepoprawny klucz bądź wartość dla nazwy produktu",
+    "ERROR-PASSWORDS-DONT-MATCH": "Przesłane hasła nie są identyczne"
 }

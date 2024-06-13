@@ -17,7 +17,7 @@ func (a *InstanceAPI) UpdateUser(request *pkg.UserUpdate) error {
 	users, err := a.GetUsers(&pkg.UserFilter{
 		Id: request.Id,
 	})
-	if err != nil {
+	if err != nil || len(users) == 0 {
 		a.log.Error("Could not retrieve user",
 			zap.Error(err),
 		)

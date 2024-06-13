@@ -24,5 +24,6 @@
     "ERROR-UPDATING-ORDER": "There's been an error while updating the order",
     "ERROR-CREATING-ORDER": "There's been en error while placing the order",
     "ERROR-INVALID-BASKET-VALUE": "Invalid value provided for order basket",
-    "ERROR-INVALID-NAME": "Invalid key or value provided for name"
+    "ERROR-INVALID-NAME": "Invalid key or value provided for name",
+    "ERROR-PASSWORDS-DONT-MATCH": "Provided password don't match"
 }

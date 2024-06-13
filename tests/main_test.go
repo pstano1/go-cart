@@ -5,16 +5,18 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/pstano1/customer-api/client"
 	"github.com/pstano1/go-cart/internal/api"
 	"github.com/pstano1/go-cart/internal/db"
-	"github.com/pstano1/go-cart/internal/pkg"
 	exchange "github.com/pstano1/go-cart/internal/pkg/exchangeProvider"
 	"github.com/pstano1/go-cart/internal/pkg/stripeProvider"
 	"github.com/spf13/viper"
 	"github.com/testcontainers/testcontainers-go"
+	postgresMock "github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -26,7 +28,6 @@ import (
 var API *api.InstanceAPI
 
 const (
-	confOptBindPort               = "BIND_PORT"
 	confOptSecretKey              = "SECRET_KEY"
 	confOptCustomerServiceAddress = "CUSTOMER_SERVICE_ADDRESS"
 	confOptStripeKey              = "STRIPE_KEY"
@@ -37,6 +38,8 @@ const (
 	dbUser     = "testDBUser"
 	dbPassword = "strong-password"
 )
+
+var customerId = "c6a2b5a1-6851-438b-a055-2ae0d1116b50"
 
 func setupTestEnvironment() {
 	ctx := context.Background()
@@ -50,20 +53,17 @@ func setupTestEnvironment() {
 		log.Fatalf("could not load config file: %v", err)
 	}
 
-	req := testcontainers.ContainerRequest{
-		Image:        "postgres:16-alpine",
-		ExposedPorts: []string{"5432/tcp"},
-		Env: map[string]string{
-			"POSTGRES_USER":     dbUser,
-			"POSTGRES_PASSWORD": dbPassword,
-			"POSTGRES_DB":       dbName,
-		},
-		WaitingFor: wait.ForListeningPort("5432/tcp"),
-	}
-	postgresContainer, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
-		ContainerRequest: req,
-		Started:          true,
-	})
+	postgresContainer, err := postgresMock.RunContainer(ctx,
+		testcontainers.WithImage("docker.io/postgres:16-alpine"),
+		postgresMock.WithInitScripts(filepath.Join("mock_data.sql")),
+		postgresMock.WithDatabase(dbName),
+		postgresMock.WithUsername(dbUser),
+		postgresMock.WithPassword(dbPassword),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").
+				WithOccurrence(2).
+				WithStartupTimeout(30*time.Second)),
+	)
 	if err != nil {
 		log.Fatalf("failed to start container: %s", err)
 	}
@@ -80,17 +80,6 @@ func setupTestEnvironment() {
 	gormDB, err := gorm.Open(postgres.Open(connURI), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("error occured while connecting to database %v", err)
-	}
-	err = gormDB.AutoMigrate(
-		&pkg.User{},
-		&pkg.Permission{},
-		&pkg.Product{},
-		&pkg.ProductCategory{},
-		&pkg.Order{},
-		&pkg.Coupon{},
-	)
-	if err != nil {
-		log.Fatalf("error occured while migrating database: %v", err)
 	}
 
 	dbController := db.NewDBController(

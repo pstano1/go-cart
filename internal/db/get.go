@@ -25,6 +25,9 @@ func (d *DBController) GetUsers(filter *pkg.UserFilter) ([]pkg.User, error) {
 	if filter.Id != "" {
 		gormQuery = gormQuery.Where("users.id = ?", filter.Id)
 	}
+	if filter.CustomerId != "" {
+		gormQuery = gormQuery.Where("users.customer_id = ?", filter.CustomerId)
+	}
 	gormQuery = gormQuery.Where("users.deleted_at is null")
 	rows, err := gormQuery.Rows()
 	if err != nil {
