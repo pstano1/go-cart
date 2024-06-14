@@ -126,3 +126,43 @@ INSERT INTO product_categories (id, name, created_at, updated_at, customer_id) V
 ('e3a2b5a1-6851-438b-a055-2ae0d1116b52', 'clothing', NOW(), NOW(), 'c6a2b5a1-6851-438b-a055-2ae0d1116b50'),
 ('f4a2b5a1-6851-438b-a055-2ae0d1116b53', 'home&kitchen', NOW(), NOW(), 'c6a2b5a1-6851-438b-a055-2ae0d1116b50'),
 ('g5a2b5a1-6851-438b-a055-2ae0d1116b54', 'sports', NOW(), NOW(), 'c6a2b5a1-6851-438b-a055-2ae0d1116b50');
+
+INSERT INTO coupons (id, created_at, updated_at, promo_code, amount, unit, categories, is_active, customer_id) VALUES
+('505892df-ac66-42f6-9fab-74fd03dbc5f3', NOW(), NOW(), 'MAY20', 20, 'percentage', ARRAY[
+    'books', 
+    'sports'
+    ]::text[], 
+    true, 
+    'c6a2b5a1-6851-438b-a055-2ae0d1116b50'
+);
+
+INSERT INTO products(id, created_at, updated_at, names, descriptions, categories, prices, price_history, customer_id) VALUES 
+(
+    '0883981f-dd7e-436f-a753-be8172324e28', 
+    NOW(), 
+    NOW(),
+    '{"en": "Example Product", "pl": "Przykładowy Produkt"}',
+    '{"en": "This is an example product description.", "pl": "To jest przykładowy opis produktu."}',
+    ARRAY['electronics']::text[],
+    '{"USD": 50.25, "EUR": 50}',
+    NULL,
+    'c6a2b5a1-6851-438b-a055-2ae0d1116b50'
+);
+
+
+INSERT INTO orders(id, created_at, updated_at, total_cost, currency, country, city, postal_code, address, status, basket, tax_id, customer_id) VALUES
+(
+    '4709fbb1-6462-4518-859c-f804b43b0d2e', 
+    NOW(), 
+    NOW(), 
+    100.50, 
+    'USD',
+    'US', 
+    'New York', 
+    '10001', 
+    '123 Main St', 
+    'placed', 
+    '{"items": [{"0883981f-dd7e-436f-a753-be8172324e28": "Example Product", "quantity": 2, "price": 50.25}]}', 
+    '1234567890', 
+    'c6a2b5a1-6851-438b-a055-2ae0d1116b50'
+);

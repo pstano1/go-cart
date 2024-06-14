@@ -69,7 +69,7 @@ func TestGetUsers(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		users, _ := API.GetUsers(test.filter)
+		users, _ := test.in.GetUsers(test.filter)
 		if len(users) != len(test.want) {
 			t.Errorf("%s - got %d length, want %d length", test.name, len(users), len(test.want))
 		}
@@ -90,7 +90,7 @@ func TestGetPermissions(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		permissions, _ := API.GetPermissions()
+		permissions, _ := test.in.GetPermissions()
 		if len(permissions) != len(test.want) {
 			t.Errorf("%s - got %d length, want %d length", test.name, len(permissions), len(test.want))
 		}
@@ -155,7 +155,7 @@ func TestCreateUser(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		_, err := API.CreateUser(test.payload)
+		_, err := test.in.CreateUser(test.payload)
 		if err != test.want {
 			t.Errorf("%s - got %d, want %d", test.name, err, test.want)
 		}
@@ -198,7 +198,7 @@ func TestUpdateUser(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		err := API.UpdateUser(test.payload)
+		err := test.in.UpdateUser(test.payload)
 		if err != test.want {
 			t.Errorf("%s - got %d, want %d", test.name, err, test.want)
 		}

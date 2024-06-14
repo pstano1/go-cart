@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"path/filepath"
 	"testing"
@@ -28,18 +29,12 @@ import (
 var API *api.InstanceAPI
 
 const (
-	confOptSecretKey              = "SECRET_KEY"
-	confOptCustomerServiceAddress = "CUSTOMER_SERVICE_ADDRESS"
-	confOptStripeKey              = "STRIPE_KEY"
+	dbName           = "testDB"
+	dbUser           = "testDBUser"
+	dbPassword       = "strong-password"
+	confOptStripeKey = "STRIPE_KEY"
+	customerId       = "c6a2b5a1-6851-438b-a055-2ae0d1116b50"
 )
-
-const (
-	dbName     = "testDB"
-	dbUser     = "testDBUser"
-	dbPassword = "strong-password"
-)
-
-var customerId = "c6a2b5a1-6851-438b-a055-2ae0d1116b50"
 
 func setupTestEnvironment() {
 	ctx := context.Background()
@@ -87,7 +82,10 @@ func setupTestEnvironment() {
 		logger,
 	)
 
-	conn, err := grpc.Dial(viper.GetString(confOptCustomerServiceAddress), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	lis, serve := mockGRPCServer()
+	go serve(lis)
+	addr := lis.Addr().String()
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		logger.Fatal("could not establish connection",
 			zap.Error(err),
@@ -105,8 +103,20 @@ func setupTestEnvironment() {
 		CustomerClient:   customerClient,
 		ExchangeProvider: exchangeProvider,
 		StripeProvider:   sp,
-		SecretKey:        viper.GetString(confOptSecretKey),
+		SecretKey:        "example-secret-key",
 	})
+}
+
+func mockGRPCServer() (net.Listener, func(lis net.Listener) error) {
+	lis, err := net.Listen("tcp", ":0")
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	defer lis.Close()
+
+	grpcServer := grpc.NewServer()
+
+	return lis, grpcServer.Serve
 }
 
 func TestMain(m *testing.M) {

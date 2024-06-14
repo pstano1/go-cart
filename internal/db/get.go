@@ -140,6 +140,9 @@ func (d *DBController) GetCoupons(filter *pkg.CouponFilter) ([]pkg.Coupon, error
 	if filter.Id != "" {
 		gormQuery = gormQuery.Where("coupons.id = ?", filter.Id)
 	}
+	if filter.Code != "" {
+		gormQuery = gormQuery.Where("coupons.promo_code = ?", filter.Code)
+	}
 	if filter.CustomerId != "" {
 		gormQuery = gormQuery.Where("coupons.customer_id = ?", filter.CustomerId)
 	}

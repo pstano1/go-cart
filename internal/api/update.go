@@ -118,13 +118,19 @@ func (a *InstanceAPI) UpdateCoupon(request *pkg.CouponUpdate) error {
 		)
 		return pkg.ErrCouponNotFound
 	}
+	if len(coupons) == 0 {
+		a.log.Error("Could not retrieve coupon",
+			zap.Error(err),
+		)
+		return pkg.ErrCouponNotFound
+	}
 	coupon := coupons[0]
 	err = copier.Copy(&coupon, request)
 	if err != nil {
 		a.log.Debug(err.Error())
 		return err
 	}
-	err = a.dbController.Update(coupon)
+	err = a.dbController.Update(&coupon)
 	if err != nil {
 		a.log.Debug(err.Error())
 		return pkg.ErrUpdatingCoupon
