@@ -69,7 +69,7 @@ func setupTestEnvironment() {
 	}
 
 	connURI := fmt.Sprintf("host=localhost port=%s user=%s password=%s dbname=%s sslmode=disable", port.Port(), dbUser, dbPassword, dbName)
-	logger := zap.Must(zap.NewDevelopment())
+	logger := zap.Must(zap.NewProduction())
 	defer logger.Sync()
 
 	gormDB, err := gorm.Open(postgres.Open(connURI), &gorm.Config{})
