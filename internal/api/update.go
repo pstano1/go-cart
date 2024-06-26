@@ -145,7 +145,7 @@ func (a *InstanceAPI) UpdateOrder(request *pkg.OrderUpdate) error {
 	orders, err := a.GetOrders(&pkg.OrderFilter{
 		Id: request.Id,
 	})
-	if err != nil {
+	if err != nil || len(orders) == 0 {
 		a.log.Error("Could not retrieve order",
 			zap.Error(err),
 		)
@@ -157,7 +157,7 @@ func (a *InstanceAPI) UpdateOrder(request *pkg.OrderUpdate) error {
 		a.log.Debug(err.Error())
 		return err
 	}
-	err = a.dbController.Update(order)
+	err = a.dbController.Update(&order)
 	if err != nil {
 		a.log.Debug(err.Error())
 		return pkg.ErrUpdatingOrder

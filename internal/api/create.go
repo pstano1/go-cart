@@ -72,7 +72,6 @@ func (a *InstanceAPI) CreateProduct(request *pkg.ProductCreate) (*string, error)
 		return nil, err
 	}
 	for key, value := range product.Names {
-		print(key)
 		if !isValidNameOrDescription(key, value) {
 			return nil, pkg.ErrInvalidNameKeyOrValue
 		}
@@ -165,7 +164,7 @@ func (a *InstanceAPI) CreateOrder(request *pkg.OrderCreate) (pkg.OrderCreateResp
 	}
 	var total float32 = 0
 	summaries := make([]pkg.ProductSummary, 0)
-	for key, value := range request.Basket {
+	for key, value := range order.Basket {
 		if !isValidBasketEntry(key, value) {
 			return res, pkg.ErrInvalidBasketValue
 		}
@@ -193,7 +192,7 @@ func (a *InstanceAPI) CreateOrder(request *pkg.OrderCreate) (pkg.OrderCreateResp
 			Code:       request.Coupon,
 			CustomerId: request.CustomerId,
 		})
-		if len(coupons) != 0 && coupons[0].IsActive && err == nil {
+		if request.Coupon != "" && len(coupons) != 0 && coupons[0].IsActive && err == nil {
 			if coupons[0].Unit == "percentage" {
 				total = total - (total * (float32(coupons[0].Amount) / 100))
 			} else {

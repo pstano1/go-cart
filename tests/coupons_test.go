@@ -71,7 +71,7 @@ func TestGetCoupons(t *testing.T) {
 	for _, test := range tests {
 		coupons, _ := test.in.GetCoupons(test.filter)
 		if len(coupons) != len(test.want) {
-			t.Errorf("%s - got %d length, want %d length", test.name, len(coupons), len(test.want))
+			t.Errorf("%s - got %d, want %d", test.name, len(coupons), len(test.want))
 		}
 	}
 }
@@ -145,7 +145,7 @@ func TestUpdateCoupons(t *testing.T) {
 	for _, test := range tests {
 		err := test.in.UpdateCoupon(test.payload)
 		if err != test.want {
-			t.Errorf("%s - got %d length, want %d length", test.name, err, test.want)
+			t.Errorf("%s - got %d, want %d", test.name, err, test.want)
 		}
 	}
 }
